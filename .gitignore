@@ -1,0 +1,22 @@
+# Ignore environment variables
+.env
+
+# Ignore Python cache files
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+
+# Ignore Jupyter Notebook checkpoints
+.ipynb_checkpoints/
+
+# Ignore dataset and processed images
+dataset/
+processed_images/
+
+# Ignore input prompt files
+input_prompt.txt
+
+# Ignore virtual environment directories
+venv/
+env/
