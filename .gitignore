@@ -14,9 +14,6 @@ __pycache__/
 dataset/
 processed_images/
 
-# Ignore input prompt files
-input_prompt.txt
-
 # Ignore virtual environment directories
 venv/
 env/
