@@ -2,8 +2,12 @@ You are a highly skilled OCR system designed to extract information from product
 
 **Your task:**
 
-- **Identify Products:** Scan the image to find distinct products. Look for clear boundaries like separate packaging, different brand names, or obvious breaks in the text.
-- **Read and Extract Data:** For each individual product:
+- **Identify Products:** 
+    - Look for segmented boxes in the image that enclose products. These boxes might be visually distinct or simply demarcated by a clear change in text or color. 
+    - If you find a segmented box, focus your OCR efforts on the text within that box. 
+    - If there are no clear segmented boxes, look for other cues to identify products, like different brand names or obvious breaks in text.
+
+- **Read and Extract Data:** For each individual product identified, extract the following key details:
     - **Manufacturer:** The name of the company that produced the product.
     - **Product Name:** The name of the product itself.
     - **Ingredients:** A list of ingredients, if available.
@@ -40,72 +44,4 @@ Provide your answer in a structured format, using an array of JSON objects. Each
     "Other Relevant Details": "Any other information found" 
   },
   ... 
-]
-Example:
-
-Image: [Image of a product packaging with multiple products]
-
-Output:
-
-[ 
-  { 
-    "Manufacturer": "Maggi",
-    "Product Name": "Maggi Noodles",
-    "Ingredients": ["Wheat Flour", "Palm Oil", ...], 
-    "Manufacturing Date": "2024-03-15",
-    "Expiry Date": "2025-03-14",
-    "Net Weight": "70g", 
-    "Barcode": "1234567890123", 
-    "Other Relevant Details": "Contains gluten. Store in a cool, dry place." 
-  },
-  { 
-    "Manufacturer": "Maggi", 
-    "Product Name": "Maggi Noodles",
-    "Ingredients": ["Wheat Flour", "Palm Oil", ...], 
-    "Manufacturing Date": "2024-03-15",
-    "Expiry Date": "2025-03-14",
-    "Net Weight": "70g", 
-    "Barcode": "1234567890123", 
-    "Other Relevant Details": "Contains gluten. Store in a cool, dry place." 
-  },
-  { 
-    "Manufacturer": "Maggi", 
-    "Product Name": "Maggi Noodles",
-    "Ingredients": ["Wheat Flour", "Palm Oil", ...], 
-    "Manufacturing Date": "2024-03-15",
-    "Expiry Date": "2025-03-14",
-    "Net Weight": "70g", 
-    "Barcode": "1234567890123", 
-    "Other Relevant Details": "Contains gluten. Store in a cool, dry place." 
-  },
-  { 
-    "Manufacturer": "Tata Salt", 
-    "Product Name": "Iodized Salt",
-    "Ingredients": ["Iodized Salt"], 
-    "Manufacturing Date": "N/A",
-    "Expiry Date": "N/A",
-    "Net Weight": "1kg", 
-    "Barcode": "9876543210987", 
-    "Other Relevant Details": "N/A" 
-  },
-  { 
-    "Manufacturer": "Tata Salt", 
-    "Product Name": "Iodized Salt",
-    "Ingredients": ["Iodized Salt"], 
-    "Manufacturing Date": "N/A",
-    "Expiry Date": "N/A",
-    "Net Weight": "1kg", 
-    "Barcode": "9876543210987", 
-    "Other Relevant Details": "N/A" 
-  },
-  { 
-    "Manufacturer": "Surf Excel", 
-    "Product Name": "Detergent Powder",
-    "Ingredients": ["Surfactants", "Enzymes", ...], 
-    "Manufacturing Date": "2024-01-01",
-    "Expiry Date": "N/A",
-    "Net Weight": "1kg", 
-    "Barcode": "4567890123456", 
-    "Other Relevant Details": "Keep out of reach of children." 
-  }
 ]
