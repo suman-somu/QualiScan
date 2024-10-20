@@ -3,6 +3,7 @@ import os
 import cv2
 import io
 import time
+import math
 
 from io import BytesIO
 from PIL import Image
@@ -53,7 +54,6 @@ def image_to_base64(image_file: UploadFile) -> str:
 
 def draw_bounding_boxes(image_path, predictions):
     image = cv2.imread(image_path)
-
     for prediction in predictions:
         x, y, width, height = (
             int(prediction["x"]),
@@ -61,15 +61,19 @@ def draw_bounding_boxes(image_path, predictions):
             int(prediction["width"]),
             int(prediction["height"]),
         )
-        top_left = (x, y)
-        bottom_right = (x + width, y + height)
+        
+        top_left = (math.floor(x - width / 2), math.floor(y - height / 2))
+        bottom_right = (math.floor(x + width / 2), math.floor(y + height / 2))
+        
         cv2.rectangle(image, top_left, bottom_right, (0, 255, 0), 2)
-        class_name = prediction.get("class", "Unknown")
-        confidence = prediction.get("confidence", 0)
-        label = f"{class_name}: {confidence:.2f}"
-        cv2.putText(
-            image, label, (x, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2
-        )
+        
+        # Remove label display
+        # class_name = prediction.get("class", "Unknown")
+        # confidence = prediction.get("confidence", 0)
+        # label = f"{class_name}: {confidence:.2f}"
+        # cv2.putText(
+        #     image, label, (x, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2
+        # )
 
     output_path = "output_image_with_boxes.jpg"
     cv2.imwrite(output_path, image)
