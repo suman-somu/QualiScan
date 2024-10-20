@@ -4,12 +4,12 @@ import cv2
 import io
 import time
 
-
 from io import BytesIO
 from PIL import Image
 
 from fastapi import FastAPI, File, UploadFile, Form, HTTPException
 from fastapi.responses import JSONResponse, FileResponse
+from fastapi.middleware.cors import CORSMiddleware
 from inference_sdk import InferenceHTTPClient
 from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain_core.messages import HumanMessage
@@ -29,11 +29,18 @@ os.environ["LANGCHAIN_API_KEY"] = langchain_api_key
 
 app = FastAPI()
 
+# Allow CORS from everywhere
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 client = InferenceHTTPClient(
     api_url="https://detect.roboflow.com", api_key=roboflow_api_key
 )
-
 
 def image_to_base64(image_file: UploadFile) -> str:
     image = Image.open(image_file.file)
@@ -43,7 +50,6 @@ def image_to_base64(image_file: UploadFile) -> str:
 
     image_base64 = base64.b64encode(buffered.getvalue()).decode("utf-8")
     return image_base64
-
 
 def draw_bounding_boxes(image_path, predictions):
     image = cv2.imread(image_path)
@@ -69,7 +75,6 @@ def draw_bounding_boxes(image_path, predictions):
     cv2.imwrite(output_path, image)
     return output_path
 
-
 async def segment_image_and_get_predictions(image_file: UploadFile):
 
     image_data = await image_file.read()
@@ -87,7 +92,6 @@ async def segment_image_and_get_predictions(image_file: UploadFile):
     os.remove(temp_image_path)
 
     return output_image_path
-
 
 @app.post("/process-ocr/")
 async def process_ocr(image: UploadFile = File(...)):
@@ -130,25 +134,17 @@ async def process_ocr(image: UploadFile = File(...)):
             content={
                 "Output": ai_msg.content,
                 "Processing Time (seconds)": processing_time,
-            }
+            },
+            status_code=200,
         )
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
-
 
 @app.get("/health/")
 def health_check():
     return {"status": "OK"}
 
-
 if __name__ == "__main__":
     import uvicorn
 
     uvicorn.run(app, host="0.0.0.0", port=8000)
-
-
-
-
-
-
-# TODO:// the object detection model is giving wrong predictions of details. Need to fix the model or, dont show the details in the output image. As it affecting the output of the vision model.
