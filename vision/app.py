@@ -16,7 +16,13 @@ from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain_core.messages import HumanMessage
 from dotenv import load_dotenv
 
+#mongodb
+from motor.motor_asyncio import AsyncIOMotorClient
+from pydantic import BaseModel
+
+
 load_dotenv()
+
 google_api_key = os.getenv("GOOGLE_API_KEY")
 langchain_api_key = os.getenv("LANGCHAIN_API_KEY")
 roboflow_api_key = os.getenv("ROBOFLOW_API_KEY")
@@ -27,6 +33,11 @@ if google_api_key is None or langchain_api_key is None:
 os.environ["GOOGLE_API_KEY"] = google_api_key
 os.environ["LANGCHAIN_TRACING_V2"] = "true"
 os.environ["LANGCHAIN_API_KEY"] = langchain_api_key
+
+# MongoDB connection string
+MONGO_URL = "mongodb://localhost:27017"
+client = AsyncIOMotorClient(MONGO_URL)
+db = client["mydatabase"]
 
 app = FastAPI()
 
