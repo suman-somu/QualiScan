@@ -79,6 +79,23 @@ def draw_bounding_boxes(image_path, predictions):
     cv2.imwrite(output_path, image)
     return output_path
 
+async def resize_image(image_file: UploadFile):
+    # Read the image data from the file
+    image_data = await image_file.read()
+    
+    # Open the image using PIL
+    image = Image.open(BytesIO(image_data))
+    
+    # Resize the image to 640x640
+    resized_image = image.resize((640, 640))
+    
+    # Save the resized image to a temporary path
+    temp_resized_image_path = "temp_resized_image.jpg"
+    resized_image.save(temp_resized_image_path, format="JPEG")
+    
+    return temp_resized_image_path
+
+
 async def segment_image_and_get_predictions(image_file: UploadFile):
 
     image_data = await image_file.read()
