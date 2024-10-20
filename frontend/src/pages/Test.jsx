@@ -2,6 +2,9 @@ import { useState } from 'react';
 
 function Test() {
   const [selectedImage, setSelectedImage] = useState(null);
+  const [output, setOutput] = useState(null);
+  const [processingTime, setProcessingTime] = useState(null);
+  const [segmentedImage, setSegmentedImage] = useState(null);
 
   const handleImageUpload = (event) => {
     const file = event.target.files[0];
@@ -20,13 +23,16 @@ function Test() {
     formData.append('image', selectedImage);
 
     try {
-      const response = await fetch('YOUR_API_URL_HERE', {
+      const response = await fetch('http://localhost:8000/process-ocr/', {
         method: 'POST',
         body: formData,
       });
 
       if (response.ok) {
-        alert('Image processed successfully!');
+        const data = await response.json();
+        setOutput(data.Output);
+        setProcessingTime(data['Processing Time (seconds)']);
+        setSegmentedImage(data['Segmented Image']);
       } else {
         alert('Failed to process image.');
       }
@@ -50,6 +56,9 @@ function Test() {
 
   const handleDiscardImage = () => {
     setSelectedImage(null);
+    setOutput(null);
+    setProcessingTime(null);
+    setSegmentedImage(null);
   };
 
   return (
@@ -70,7 +79,7 @@ function Test() {
           />
           <label
             htmlFor="upload-input"
-            className="inline-block px-4 py-2 mt-4 bg-button text-gray-600 rounded cursor-pointer hover:bg-buttonHover"
+            className="inline-block px-4 py-2 mt-4 bg-button text-gray-600  rounded cursor-pointer hover:bg-buttonHover"
           >
             Upload Image
           </label>
@@ -92,6 +101,20 @@ function Test() {
                 Process
               </button>
             </div>
+          </div>
+        )}
+        {output && (
+          <div className="mt-4 p-4 bg-highlight rounded-lg">
+            <h2 className="text-primary">Output:</h2>
+            <p className="text-secondary">{output}</p>
+            <h2 className="text-primary mt-2">Processing Time (seconds):</h2>
+            <p className="text-secondary">{processingTime}</p>
+            {segmentedImage && (
+              <div className="mt-4">
+                <h2 className="text-primary">Segmented Image:</h2>
+                <img src={segmentedImage} alt="Segmented" className="mt-2 rounded-lg" />
+              </div>
+            )}
           </div>
         )}
       </main>
