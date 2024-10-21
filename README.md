@@ -5,47 +5,23 @@ This project uses a Vision Transformer Model to detect the ripeness and freshnes
 ## Project Structure
 
 ```
-__pycache__/
-.env
-.gitignore
 dataset/
 frontend/
-    .gitignore
-    eslint.config.js
-    index.html
-    package.json
-    pnpm-lock.yaml
-    postcss.config.cjs
-    public/
-    README.md
     src/
         App.jsx
-        assets/
         components/
-            ...
-        index.css
-        main.jsx
-        output.css
         pages/
-    tailwind.config.js
-    vite.config.js
-main.py
-README.md
-requirements.txt
-utils/
-    expiry_date_checker.py
-    image_process.py
+        main.jsx
 vision/
-    __init__.py
-    __pycache__/
     config.py
-    input_prompt.txt
     middleware.py
     mongo.py
     routes.py
     scripts/
         ocr/
     utils.py
+main.py
+.env
 ```
 
 ## Installation
