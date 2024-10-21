@@ -1,19 +1,28 @@
 import { useState } from 'react';
+import { Button, Container, Text, Group, Stack, TextInput, LoadingOverlay } from '@mantine/core';
+import { Dropzone, MIME_TYPES } from '@mantine/dropzone';
 
 function Test() {
   const [selectedImage, setSelectedImage] = useState(null);
-  const [output, setOutput] = useState(null);
-  const [processingTime, setProcessingTime] = useState(null);
-  const [segmentedImage, setSegmentedImage] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [manufacturer, setManufacturer] = useState('');
+  const [productName, setProductName] = useState('');
+  const [ingredients, setIngredients] = useState('');
+  const [manufacturingUnit, setManufacturingUnit] = useState('');
+  const [expiryDate, setExpiryDate] = useState('');
+  const [netWeight, setNetWeight] = useState('');
+  const [barcode, setBarcode] = useState('');
+  const [otherDetails, setOtherDetails] = useState('');
 
-  const handleImageUpload = (event) => {
-    const file = event.target.files[0];
+  const handleImageUpload = (files) => {
+    const file = files[0];
     if (file) {
       setSelectedImage(file);
     }
   };
 
   const handleProcessImage = async () => {
+    setLoading(true);
     if (!selectedImage) {
       alert('Please select an image first.');
       return;
@@ -22,103 +31,82 @@ function Test() {
     const formData = new FormData();
     formData.append('image', selectedImage);
 
-    try {
-      const response = await fetch('http://localhost:8000/process-ocr/', {
-        method: 'POST',
-        body: formData,
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        setOutput(data.Output);
-        setProcessingTime(data['Processing Time (seconds)']);
-        setSegmentedImage(data['Segmented Image']);
-      } else {
-        alert('Failed to process image.');
+    const expectedValues = [
+      {
+        manufacturer,
+        product_name: productName,
+        ingredients,
+        manufacturing_unit: manufacturingUnit,
+        expiry_date: expiryDate,
+        net_weight: netWeight,
+        barcode,
+        other_details: otherDetails,
       }
-    } catch (error) {
+    ];
+
+    formData.append('expected_values', JSON.stringify(expectedValues));
+
+    // Send the request asynchronously and clear inputs immediately
+    await fetch('http://localhost:8000/process-ocr/', {
+      method: 'POST',
+      body: formData,
+    }).catch((error) => {
       console.error('Error processing image:', error);
       alert('An error occurred while processing the image.');
-    }
-  };
+    });
 
-  const handleDrop = (event) => {
-    event.preventDefault();
-    const file = event.dataTransfer.files[0];
-    if (file) {
-      setSelectedImage(file);
-    }
-  };
-
-  const handleDragOver = (event) => {
-    event.preventDefault();
+    // Clear inputs after sending the request
+    handleDiscardImage();
+    setLoading(false);
   };
 
   const handleDiscardImage = () => {
     setSelectedImage(null);
-    setOutput(null);
-    setProcessingTime(null);
-    setSegmentedImage(null);
+    setManufacturer('');
+    setProductName('');
+    setIngredients('');
+    setManufacturingUnit('');
+    setExpiryDate('');
+    setNetWeight('');
+    setBarcode('');
+    setOtherDetails('');
   };
 
   return (
-    <container className='h-full w-full flex p-10'>
-      <main className="w-full h-fit flex flex-col justify-center items-center">
-        <div
-          onDrop={handleDrop}
-          onDragOver={handleDragOver}
-          className="min-w-[80%] border-2 border-dashed border-gray-300 p-8 text-center mb-4 rounded-lg"
+    <Container className='h-full w-full flex flex-col p-10'>
+      <LoadingOverlay visible={loading} overlayBlur={2} />
+      <Stack align="center" spacing="md" className="w-full">
+        <Dropzone
+          onDrop={handleImageUpload}
+          accept={[MIME_TYPES.png, MIME_TYPES.jpeg]}
+          multiple={false}
+          className="w-full border-2 border-dashed border-gray-300 p-8 text-center mb-4 rounded-lg"
         >
-          <p className="text-gray-600">Drag & Drop an image here</p>
-          <input
-            type="file"
-            accept="image/*"
-            onChange={handleImageUpload}
-            className="hidden"
-            id="upload-input"
-          />
-          <label
-            htmlFor="upload-input"
-            className="inline-block px-4 py-2 mt-4 bg-button text-gray-600  rounded cursor-pointer hover:bg-buttonHover"
-          >
-            Upload Image
-          </label>
-        </div>
+          <Text align="center" c="gray">Drag & Drop an image here</Text>
+          <Text align="center" c="gray">or</Text>
+          <Button mt="sm" color="blue">Upload Image</Button>
+        </Dropzone>
         {selectedImage && (
-          <div className="mt-4">
-            <p className="text-gray-700">Selected Image: {selectedImage.name}</p>
-            <div className="mt-2">
-              <button
-                onClick={handleDiscardImage}
-                className="px-4 py-2 bg-red-500 text-white rounded mr-2 hover:bg-red-700"
-              >
-                Discard
-              </button>
-              <button
-                onClick={handleProcessImage}
-                className="px-4 py-2 bg-button text-white rounded hover:bg-buttonHover"
-              >
-                Process
-              </button>
-            </div>
+          <div className="w-full mt-4">
+            <Text c="gray">Selected Image: {selectedImage.name}</Text>
+            <Group mt="sm">
+              <Button color="red" onClick={handleDiscardImage}>Discard</Button>
+              <Button color="blue" onClick={handleProcessImage}>Process</Button>
+            </Group>
+            <Stack mt="md" spacing="sm" className="w-full">
+              <TextInput label="Manufacturer" value={manufacturer} onChange={(e) => setManufacturer(e.target.value)} />
+              <TextInput label="Product Name" value={productName} onChange={(e) => setProductName(e.target.value)} />
+              <TextInput label="Ingredients" value={ingredients} onChange={(e) => setIngredients(e.target.value)} />
+              <TextInput label="Manufacturing Unit" value={manufacturingUnit} onChange={(e) => setManufacturingUnit(e.target.value)} />
+              <TextInput label="Expiry Date" value={expiryDate} onChange={(e) => setExpiryDate(e.target.value)} />
+              <TextInput label="Net Weight" value={netWeight} onChange={(e) => setNetWeight(e.target.value)} />
+              <TextInput label="Barcode" value={barcode} onChange={(e) => setBarcode(e.target.value)} />
+              <TextInput label="Other Details" value={otherDetails} onChange={(e) => setOtherDetails(e.target.value)} />
+            </Stack>
           </div>
         )}
-        {output && (
-          <div className="mt-4 p-4 bg-highlight rounded-lg">
-            <h2 className="text-primary">Output:</h2>
-            <p className="text-secondary">{output}</p>
-            <h2 className="text-primary mt-2">Processing Time (seconds):</h2>
-            <p className="text-secondary">{processingTime}</p>
-            {segmentedImage && (
-              <div className="mt-4">
-                <h2 className="text-primary">Segmented Image:</h2>
-                <img src={segmentedImage} alt="Segmented" className="mt-2 rounded-lg" />
-              </div>
-            )}
-          </div>
-        )}
-      </main>
-    </container>
+      </Stack>
+    </Container>
   );
 }
 

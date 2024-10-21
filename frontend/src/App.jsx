@@ -2,6 +2,7 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Sidebar from './components/Sidebar';
 import Header from './components/Header';
 import Test from './pages/Test';
+import Dashboard from './pages/Dashboard';
 
 function App() {
   return (
@@ -10,7 +11,7 @@ function App() {
         <Header />
         <div className='flex grow h-full w-full'>
           <Sidebar />
-          <main className='w-full h-full'>
+          <main className='grow w-full h-full overflow-auto p-4'>
             <Routes>
               <Route path="/" element={<Dashboard />} />
               <Route path="/test" element={<Test />} />
@@ -20,10 +21,6 @@ function App() {
       </div>
     </Router>
   );
-}
-
-function Dashboard() {
-  return <h1>Dashboard</h1>;
 }
 
 export default App;
