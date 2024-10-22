@@ -1,11 +1,12 @@
 import { useState, useEffect } from 'react';
-import { Button, Container, Text, Group, Stack, TextInput, LoadingOverlay, Card, Accordion, ActionIcon } from '@mantine/core';
+import { Button, Container, Text, Group, Stack, TextInput, LoadingOverlay, Card, Accordion, ActionIcon, Image } from '@mantine/core';
 import { Dropzone, MIME_TYPES } from '@mantine/dropzone';
 import { Plus, Trash } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 function Test() {
-  const [selectedImage, setSelectedImage] = useState(null);
+  const [selectedImageFile, setSelectedImageFile] = useState(null);
+  const [selectedImageURL, setSelectedImageURL] = useState(null);
   const [loading, setLoading] = useState(false);
   const [products, setProducts] = useState([
     {
@@ -31,19 +32,20 @@ function Test() {
   const handleImageUpload = (files) => {
     const file = files[0];
     if (file) {
-      setSelectedImage(file);
+      setSelectedImageFile(file);
+      setSelectedImageURL(URL.createObjectURL(file));
     }
   };
 
   const handleProcessImage = async () => {
     setLoading(true);
-    if (!selectedImage) {
+    if (!selectedImageFile) {
       alert('Please select an image first.');
       return;
     }
 
     const formData = new FormData();
-    formData.append('image', selectedImage);
+    formData.append('image', selectedImageFile);
 
     const expectedValues = products.map((product) => ({
       manufacturer: product.manufacturer,
@@ -71,7 +73,8 @@ function Test() {
   };
 
   const handleDiscardImage = () => {
-    setSelectedImage(null);
+    setSelectedImageFile(null);
+    setSelectedImageURL(null);
     setProducts([
       {
         manufacturer: '',
@@ -133,9 +136,10 @@ function Test() {
           <Text align="center" c="gray">or</Text>
           <Button mt="sm" color="blue" size="lg">Upload Image</Button>
         </Dropzone>
-        {selectedImage && (
+        {selectedImageURL && (
           <div className="w-full mt-4">
-            <Text c="gray">Selected Image: {selectedImage.name}</Text>
+            <Text c="gray">Selected Image: {selectedImageFile.name}</Text>
+            <Image src={selectedImageURL} alt="Selected" className="mt-4" style={{ maxWidth: '100%', maxHeight: '300px', objectFit: 'contain' }} />
             <Group mt="sm" position="center">
               <Button color="red" onClick={handleDiscardImage} size="lg">Discard</Button>
             </Group>
