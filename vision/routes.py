@@ -22,6 +22,10 @@ client = InferenceHTTPClient(
     api_url="https://detect.roboflow.com", api_key=os.getenv("ROBOFLOW_API_KEY")
 )
 
+def get_next_order_id():
+    order_count = db["logs"].count_documents({})
+    return order_count + 1
+
 async def segment_image_and_get_predictions(image_file: UploadFile):
     logger.info("Starting image segmentation and prediction")
     
@@ -52,11 +56,18 @@ async def process_ocr(image: UploadFile = File(...), expected_values: str = Form
     logger.info("OCR processing started")
     
     try:
+
+        # Generate orderid
+        order_id = get_next_order_id()
+        logger.info(f"Generated orderid: {order_id}")
+
+        #prompt
         input_prompt_path = os.path.join(os.path.dirname(__file__), "input_prompt.txt")
         with open(input_prompt_path, "r") as file:
             input_prompt = file.read().strip()
         logger.info("Input prompt read from file")
         
+
         if image.content_type not in ["image/jpeg", "image/png", "image/jpg"]:
             logger.error("Invalid file type: %s", image.content_type)
             raise HTTPException(
@@ -64,9 +75,11 @@ async def process_ocr(image: UploadFile = File(...), expected_values: str = Form
                 detail="Invalid file type. Only JPEG, JPG, and PNG are accepted.",
             )
         
+        #image seg
         output_image_path = await segment_image_and_get_predictions(image)
         logger.info("Image segmentation and prediction completed")
         
+        #img encode
         with open(output_image_path, "rb") as img_file:
             segmented_image_base64 = base64.b64encode(img_file.read()).decode("utf-8")
         logger.info("Segmented image encoded to base64")
@@ -74,6 +87,7 @@ async def process_ocr(image: UploadFile = File(...), expected_values: str = Form
         os.remove(output_image_path)
         logger.info("Output image file removed")
         
+        #vision model
         message = HumanMessage(
             content=[
                 {"type": "text", "text": input_prompt},
@@ -101,8 +115,6 @@ async def process_ocr(image: UploadFile = File(...), expected_values: str = Form
             expected_values = json.loads(expected_values)
         else:
             expected_values = []
-
-        order_id = f"order_{random.randint(1000, 9999)}"
 
         insert_log(order_id, expected_values, actual_values)
 

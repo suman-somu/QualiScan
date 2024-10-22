@@ -11,7 +11,7 @@ db = client["qualiscan_orders"]
 
 def insert_log(order_id, expected_values, actual_values):
     log_entry = {
-        "orderid": order_id,
+        "orderid": str(order_id),
         "expected_values": expected_values,
         "actual_values": actual_values
     }
