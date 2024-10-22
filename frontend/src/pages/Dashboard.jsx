@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Accordion, Box, Group, ScrollArea, Text, Pagination } from '@mantine/core';
-import { Check, X } from 'lucide-react';
+import { Accordion, Box, Group, ScrollArea, Text, Pagination, Badge } from '@mantine/core';
 import axios from 'axios';
 
 function Dashboard() {
@@ -22,8 +21,13 @@ function Dashboard() {
 
   const items = (data || []).slice((activePage - 1) * 10, activePage * 10).map((order) => (
     <Accordion.Item key={order.orderid} value={order.orderid}>
-      <Accordion.Control icon={order.matched ? <Check color="green" /> : <X color="red" />}>
+      <Accordion.Control>
+      <div className='flex px-5'>
         <Text className="truncate">{order.orderid}</Text>
+        <Badge color={order.matched ? 'green' : 'red'} style={{ marginLeft: 'auto' }}>
+          {order.matched ? 'Matched' : 'Unmatched'}
+        </Badge>
+        </div>
       </Accordion.Control>
       <Accordion.Panel>
         <Group grow>
@@ -54,7 +58,7 @@ function Dashboard() {
 
   return (
     <div className="w-full h-screen border border-gray-300 rounded-lg p-4 overflow-auto">
-      <Accordion defaultValue="O001" className="w-full">
+      <Accordion defaultValue="O001" >
         {items}
       </Accordion>
       <Pagination total={Math.ceil(data.length / 10)} value={activePage} onChange={setPage} className="mt-4" />
