@@ -70,6 +70,9 @@ async def process_ocr(image: UploadFile = File(...), expected_values: str = Form
         with open(output_image_path, "rb") as img_file:
             segmented_image_base64 = base64.b64encode(img_file.read()).decode("utf-8")
         logger.info("Segmented image encoded to base64")
+
+        os.remove(output_image_path)
+        logger.info("Output image file removed")
         
         message = HumanMessage(
             content=[
@@ -93,7 +96,6 @@ async def process_ocr(image: UploadFile = File(...), expected_values: str = Form
 
         ai_msg_content = ai_msg.content.strip("```json\n").strip("\n```")
         actual_values = json.loads(ai_msg_content)
-        print(actual_values)
 
         if expected_values is not None:
             expected_values = json.loads(expected_values)
