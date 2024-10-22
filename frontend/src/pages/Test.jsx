@@ -1,7 +1,8 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Button, Container, Text, Group, Stack, TextInput, LoadingOverlay, Card, Accordion, ActionIcon } from '@mantine/core';
 import { Dropzone, MIME_TYPES } from '@mantine/dropzone';
 import { Plus, Trash } from 'lucide-react';
+import { motion } from 'framer-motion';
 
 function Test() {
   const [selectedImage, setSelectedImage] = useState(null);
@@ -18,6 +19,14 @@ function Test() {
       otherDetails: '',
     },
   ]);
+
+  useEffect(() => {
+    if (loading) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'auto';
+    }
+  }, [loading]);
 
   const handleImageUpload = (files) => {
     const file = files[0];
@@ -111,6 +120,7 @@ function Test() {
         zIndex={1000}
         overlayProps={{ radius: 'sm', blur: 2 }}
         loaderProps={{ color: 'blue', type: 'bars' }}
+        style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100vh' }}
       />
       <Stack align="center" spacing="md" className="w-full">
         <Dropzone
@@ -121,73 +131,96 @@ function Test() {
         >
           <Text align="center" c="gray">Drag & Drop an image here</Text>
           <Text align="center" c="gray">or</Text>
-          <Button mt="sm" color="blue">Upload Image</Button>
+          <Button mt="sm" color="blue" size="lg">Upload Image</Button>
         </Dropzone>
         {selectedImage && (
           <div className="w-full mt-4">
             <Text c="gray">Selected Image: {selectedImage.name}</Text>
-            <Group mt="sm">
-              <Button color="red" onClick={handleDiscardImage}>Discard</Button>
-              <Button color="blue" onClick={handleProcessImage}>Process</Button>
+            <Group mt="sm" position="center">
+              <Button color="red" onClick={handleDiscardImage} size="lg">Discard</Button>
             </Group>
             <Accordion mt="md" className="w-full">
               {products.map((product, index) => (
-                <Accordion.Item key={index} label={`Product ${index + 1}`}>
-                  <Card shadow="sm" padding="lg" className="w-full">
-                    <Stack spacing="sm">
-                      <TextInput
-                        label="Manufacturer"
-                        value={product.manufacturer}
-                        onChange={(e) => handleProductChange(index, 'manufacturer', e.target.value)}
-                      />
-                      <TextInput
-                        label="Product Name"
-                        value={product.productName}
-                        onChange={(e) => handleProductChange(index, 'productName', e.target.value)}
-                      />
-                      <TextInput
-                        label="Ingredients"
-                        value={product.ingredients}
-                        onChange={(e) => handleProductChange(index, 'ingredients', e.target.value)}
-                      />
-                      <TextInput
-                        label="Manufacturing Unit"
-                        value={product.manufacturingUnit}
-                        onChange={(e) => handleProductChange(index, 'manufacturingUnit', e.target.value)}
-                      />
-                      <TextInput
-                        label="Expiry Date"
-                        value={product.expiryDate}
-                        onChange={(e) => handleProductChange(index, 'expiryDate', e.target.value)}
-                      />
-                      <TextInput
-                        label="Net Weight"
-                        value={product.netWeight}
-                        onChange={(e) => handleProductChange(index, 'netWeight', e.target.value)}
-                      />
-                      <TextInput
-                        label="Barcode"
-                        value={product.barcode}
-                        onChange={(e) => handleProductChange(index, 'barcode', e.target.value)}
-                      />
-                      <TextInput
-                        label="Other Details"
-                        value={product.otherDetails}
-                        onChange={(e) => handleProductChange(index, 'otherDetails', e.target.value)}
-                      />
-                      <Group position="right" mt="md">
-                        <ActionIcon color="red" onClick={() => handleRemoveProduct(index)}>
-                          <Trash size={16} />
-                        </ActionIcon>
-                      </Group>
-                    </Stack>
-                  </Card>
-                </Accordion.Item>
+                <motion.div
+                  key={index}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.3 }}
+                >
+                  <Accordion.Item label={`Product ${index + 1}`}>
+                    <Card shadow="sm" padding="lg" className="w-full">
+                      <Stack spacing="sm">
+                        <TextInput
+                          label="Manufacturer"
+                          value={product.manufacturer}
+                          onChange={(e) => handleProductChange(index, 'manufacturer', e.target.value)}
+                        />
+                        <TextInput
+                          label="Product Name"
+                          value={product.productName}
+                          onChange={(e) => handleProductChange(index, 'productName', e.target.value)}
+                        />
+                        <TextInput
+                          label="Ingredients"
+                          value={product.ingredients}
+                          onChange={(e) => handleProductChange(index, 'ingredients', e.target.value)}
+                        />
+                        <TextInput
+                          label="Manufacturing Unit"
+                          value={product.manufacturingUnit}
+                          onChange={(e) => handleProductChange(index, 'manufacturingUnit', e.target.value)}
+                        />
+                        <TextInput
+                          label="Expiry Date"
+                          value={product.expiryDate}
+                          onChange={(e) => handleProductChange(index, 'expiryDate', e.target.value)}
+                        />
+                        <TextInput
+                          label="Net Weight"
+                          value={product.netWeight}
+                          onChange={(e) => handleProductChange(index, 'netWeight', e.target.value)}
+                        />
+                        <TextInput
+                          label="Barcode"
+                          value={product.barcode}
+                          onChange={(e) => handleProductChange(index, 'barcode', e.target.value)}
+                        />
+                        <TextInput
+                          label="Other Details"
+                          value={product.otherDetails}
+                          onChange={(e) => handleProductChange(index, 'otherDetails', e.target.value)}
+                        />
+                        <Group position="right" mt="md">
+                          <ActionIcon color="red" onClick={() => handleRemoveProduct(index)}>
+                            <Trash size={16} />
+                          </ActionIcon>
+                        </Group>
+                      </Stack>
+                    </Card>
+                  </Accordion.Item>
+                </motion.div>
               ))}
             </Accordion>
-            <Button mt="md" color="green" onClick={handleAddProduct} leftIcon={<Plus size={16} />}>
-              Add Another Product
-            </Button>
+            <Group position="center" mt="md">
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.3 }}
+              >
+                <Button color="blue" onClick={handleAddProduct} leftIcon={<Plus size={16} />} size="lg">
+                  Add Another Product
+                </Button>
+              </motion.div>
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.3 }}
+              >
+                <Button color="green" onClick={handleProcessImage} size="lg">
+                  Process
+                </Button>
+              </motion.div>
+            </Group>
           </div>
         )}
       </Stack>

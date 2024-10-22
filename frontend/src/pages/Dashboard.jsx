@@ -23,7 +23,7 @@ function Dashboard() {
     <Accordion.Item key={order.orderid} value={order.orderid}>
       <Accordion.Control>
       <div className='flex px-5'>
-        <Text className="truncate">{order.orderid}</Text>
+        <Text className="truncate"> Order: {order.orderid}</Text>
         <Badge color={order.matched ? 'green' : 'red'} style={{ marginLeft: 'auto' }}>
           {order.matched ? 'Matched' : 'Unmatched'}
         </Badge>
