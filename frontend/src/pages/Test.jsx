@@ -106,7 +106,12 @@ function Test() {
 
   return (
     <Container className='h-full w-full flex flex-col p-10'>
-      <LoadingOverlay visible={loading} overlayBlur={2} />
+      <LoadingOverlay
+        visible={loading}
+        zIndex={1000}
+        overlayProps={{ radius: 'sm', blur: 2 }}
+        loaderProps={{ color: 'blue', type: 'bars' }}
+      />
       <Stack align="center" spacing="md" className="w-full">
         <Dropzone
           onDrop={handleImageUpload}
