@@ -57,11 +57,11 @@ function Dashboard() {
   ));
 
   return (
-    <div className="w-full h-screen border border-gray-300 rounded-lg p-4 overflow-auto">
-      <Accordion defaultValue="O001" >
+    <div className="w-full min-h-full h-fit border border-gray-300 rounded-lg p-2 overflow-auto flex flex-col gap-4 items-center justify-between overflow-y-hidden ">
+      <Accordion defaultValue="O001" className='w-full grow' >
         {items}
       </Accordion>
-      <Pagination total={Math.ceil(data.length / 10)} value={activePage} onChange={setPage} className="mt-4" />
+      <Pagination total={Math.ceil(data.length / 10)} value={activePage} onChange={setPage} size={'lg'} />
     </div>
   );
 }

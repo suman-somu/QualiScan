@@ -9,7 +9,7 @@ function App() {
       <div className="w-screen h-screen flex flex-col bg-background text-text">
         <Header />
         <div className="flex grow h-full w-full">
-          <main className="grow w-full h-full overflow-auto p-4">
+          <main className="grow w-full h-full p-4">
             <Routes>
               <Route path="/" element={<Dashboard />} />
               <Route path="/test" element={<Test />} />
