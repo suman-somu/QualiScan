@@ -1,18 +1,23 @@
 import { useState } from 'react';
-import { Button, Container, Text, Group, Stack, TextInput, LoadingOverlay } from '@mantine/core';
+import { Button, Container, Text, Group, Stack, TextInput, LoadingOverlay, Card, Accordion, ActionIcon } from '@mantine/core';
 import { Dropzone, MIME_TYPES } from '@mantine/dropzone';
+import { Plus, Trash } from 'lucide-react';
 
 function Test() {
   const [selectedImage, setSelectedImage] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [manufacturer, setManufacturer] = useState('');
-  const [productName, setProductName] = useState('');
-  const [ingredients, setIngredients] = useState('');
-  const [manufacturingUnit, setManufacturingUnit] = useState('');
-  const [expiryDate, setExpiryDate] = useState('');
-  const [netWeight, setNetWeight] = useState('');
-  const [barcode, setBarcode] = useState('');
-  const [otherDetails, setOtherDetails] = useState('');
+  const [products, setProducts] = useState([
+    {
+      manufacturer: '',
+      productName: '',
+      ingredients: '',
+      manufacturingUnit: '',
+      expiryDate: '',
+      netWeight: '',
+      barcode: '',
+      otherDetails: '',
+    },
+  ]);
 
   const handleImageUpload = (files) => {
     const file = files[0];
@@ -31,22 +36,19 @@ function Test() {
     const formData = new FormData();
     formData.append('image', selectedImage);
 
-    const expectedValues = [
-      {
-        manufacturer,
-        product_name: productName,
-        ingredients,
-        manufacturing_unit: manufacturingUnit,
-        expiry_date: expiryDate,
-        net_weight: netWeight,
-        barcode,
-        other_details: otherDetails,
-      }
-    ];
+    const expectedValues = products.map((product) => ({
+      manufacturer: product.manufacturer,
+      product_name: product.productName,
+      ingredients: product.ingredients,
+      manufacturing_unit: product.manufacturingUnit,
+      expiry_date: product.expiryDate,
+      net_weight: product.netWeight,
+      barcode: product.barcode,
+      other_details: product.otherDetails,
+    }));
 
     formData.append('expected_values', JSON.stringify(expectedValues));
 
-    // Send the request asynchronously and clear inputs immediately
     await fetch('http://localhost:8000/process-ocr/', {
       method: 'POST',
       body: formData,
@@ -55,21 +57,51 @@ function Test() {
       alert('An error occurred while processing the image.');
     });
 
-    // Clear inputs after sending the request
     handleDiscardImage();
     setLoading(false);
   };
 
   const handleDiscardImage = () => {
     setSelectedImage(null);
-    setManufacturer('');
-    setProductName('');
-    setIngredients('');
-    setManufacturingUnit('');
-    setExpiryDate('');
-    setNetWeight('');
-    setBarcode('');
-    setOtherDetails('');
+    setProducts([
+      {
+        manufacturer: '',
+        productName: '',
+        ingredients: '',
+        manufacturingUnit: '',
+        expiryDate: '',
+        netWeight: '',
+        barcode: '',
+        otherDetails: '',
+      },
+    ]);
+  };
+
+  const handleProductChange = (index, field, value) => {
+    const newProducts = [...products];
+    newProducts[index][field] = value;
+    setProducts(newProducts);
+  };
+
+  const handleAddProduct = () => {
+    setProducts([
+      ...products,
+      {
+        manufacturer: '',
+        productName: '',
+        ingredients: '',
+        manufacturingUnit: '',
+        expiryDate: '',
+        netWeight: '',
+        barcode: '',
+        otherDetails: '',
+      },
+    ]);
+  };
+
+  const handleRemoveProduct = (index) => {
+    const newProducts = products.filter((_, i) => i !== index);
+    setProducts(newProducts);
   };
 
   return (
@@ -93,16 +125,64 @@ function Test() {
               <Button color="red" onClick={handleDiscardImage}>Discard</Button>
               <Button color="blue" onClick={handleProcessImage}>Process</Button>
             </Group>
-            <Stack mt="md" spacing="sm" className="w-full">
-              <TextInput label="Manufacturer" value={manufacturer} onChange={(e) => setManufacturer(e.target.value)} />
-              <TextInput label="Product Name" value={productName} onChange={(e) => setProductName(e.target.value)} />
-              <TextInput label="Ingredients" value={ingredients} onChange={(e) => setIngredients(e.target.value)} />
-              <TextInput label="Manufacturing Unit" value={manufacturingUnit} onChange={(e) => setManufacturingUnit(e.target.value)} />
-              <TextInput label="Expiry Date" value={expiryDate} onChange={(e) => setExpiryDate(e.target.value)} />
-              <TextInput label="Net Weight" value={netWeight} onChange={(e) => setNetWeight(e.target.value)} />
-              <TextInput label="Barcode" value={barcode} onChange={(e) => setBarcode(e.target.value)} />
-              <TextInput label="Other Details" value={otherDetails} onChange={(e) => setOtherDetails(e.target.value)} />
-            </Stack>
+            <Accordion mt="md" className="w-full">
+              {products.map((product, index) => (
+                <Accordion.Item key={index} label={`Product ${index + 1}`}>
+                  <Card shadow="sm" padding="lg" className="w-full">
+                    <Stack spacing="sm">
+                      <TextInput
+                        label="Manufacturer"
+                        value={product.manufacturer}
+                        onChange={(e) => handleProductChange(index, 'manufacturer', e.target.value)}
+                      />
+                      <TextInput
+                        label="Product Name"
+                        value={product.productName}
+                        onChange={(e) => handleProductChange(index, 'productName', e.target.value)}
+                      />
+                      <TextInput
+                        label="Ingredients"
+                        value={product.ingredients}
+                        onChange={(e) => handleProductChange(index, 'ingredients', e.target.value)}
+                      />
+                      <TextInput
+                        label="Manufacturing Unit"
+                        value={product.manufacturingUnit}
+                        onChange={(e) => handleProductChange(index, 'manufacturingUnit', e.target.value)}
+                      />
+                      <TextInput
+                        label="Expiry Date"
+                        value={product.expiryDate}
+                        onChange={(e) => handleProductChange(index, 'expiryDate', e.target.value)}
+                      />
+                      <TextInput
+                        label="Net Weight"
+                        value={product.netWeight}
+                        onChange={(e) => handleProductChange(index, 'netWeight', e.target.value)}
+                      />
+                      <TextInput
+                        label="Barcode"
+                        value={product.barcode}
+                        onChange={(e) => handleProductChange(index, 'barcode', e.target.value)}
+                      />
+                      <TextInput
+                        label="Other Details"
+                        value={product.otherDetails}
+                        onChange={(e) => handleProductChange(index, 'otherDetails', e.target.value)}
+                      />
+                      <Group position="right" mt="md">
+                        <ActionIcon color="red" onClick={() => handleRemoveProduct(index)}>
+                          <Trash size={16} />
+                        </ActionIcon>
+                      </Group>
+                    </Stack>
+                  </Card>
+                </Accordion.Item>
+              ))}
+            </Accordion>
+            <Button mt="md" color="green" onClick={handleAddProduct} leftIcon={<Plus size={16} />}>
+              Add Another Product
+            </Button>
           </div>
         )}
       </Stack>
