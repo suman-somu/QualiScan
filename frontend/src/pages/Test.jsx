@@ -13,7 +13,7 @@ function Test() {
       manufacturer: '',
       productName: '',
       ingredients: '',
-      manufacturingUnit: '',
+      manufacturingDate: '',
       expiryDate: '',
       netWeight: '',
       barcode: '',
@@ -51,7 +51,7 @@ function Test() {
       manufacturer: product.manufacturer,
       product_name: product.productName,
       ingredients: product.ingredients,
-      manufacturing_unit: product.manufacturingUnit,
+      manufacturing_date: product.manufacturingDate,
       expiry_date: product.expiryDate,
       net_weight: product.netWeight,
       barcode: product.barcode,
@@ -80,7 +80,7 @@ function Test() {
         manufacturer: '',
         productName: '',
         ingredients: '',
-        manufacturingUnit: '',
+        manufacturingDate: '',
         expiryDate: '',
         netWeight: '',
         barcode: '',
@@ -102,7 +102,7 @@ function Test() {
         manufacturer: '',
         productName: '',
         ingredients: '',
-        manufacturingUnit: '',
+        manufacturingDate: '',
         expiryDate: '',
         netWeight: '',
         barcode: '',
@@ -170,9 +170,9 @@ function Test() {
                           onChange={(e) => handleProductChange(index, 'ingredients', e.target.value)}
                         />
                         <TextInput
-                          label="Manufacturing Unit"
-                          value={product.manufacturingUnit}
-                          onChange={(e) => handleProductChange(index, 'manufacturingUnit', e.target.value)}
+                          label="Manufacturing Date"
+                          value={product.manufacturingDate}
+                          onChange={(e) => handleProductChange(index, 'manufacturingDate', e.target.value)}
                         />
                         <TextInput
                           label="Expiry Date"
