@@ -38,12 +38,12 @@ conda activate qualiscan
 
 Install packages with conda:
 ```sh
-conda install -c conda-forge fastapi uvicorn opencv numpy pillow python-dotenv
+conda install -c conda-forge fastapi uvicorn opencv numpy pillow python-dotenv google-generativeai langchain-core dataclasses-json google-ai-generativelanguage requests charset-normalizer backoff supervision pymongo langchain-google-genai aiohttp
 ```
 
 Install remaining packages with pip:
 ```sh
-pip install inference-sdk langchain_google-genai
+pip install inference-sdk --no-deps
 ```
 
 ## Usage
