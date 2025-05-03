@@ -13,7 +13,11 @@ from .mongo import insert_log, db
 import json
 import random
 
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(levelname)s - %(message)s',
+    datefmt='%Y-%m-%d %H:%M:%S'
+)
 logger = logging.getLogger(__name__)
 
 router = APIRouter()
@@ -56,7 +60,6 @@ async def process_ocr(image: UploadFile = File(...), expected_values: str = Form
     logger.info("OCR processing started")
     
     try:
-
         # Generate orderid
         order_id = get_next_order_id()
         logger.info(f"Generated orderid: {order_id}")
@@ -67,7 +70,6 @@ async def process_ocr(image: UploadFile = File(...), expected_values: str = Form
             input_prompt = file.read().strip()
         logger.info("Input prompt read from file")
         
-
         if image.content_type not in ["image/jpeg", "image/png", "image/jpg"]:
             logger.error("Invalid file type: %s", image.content_type)
             raise HTTPException(
@@ -100,7 +102,7 @@ async def process_ocr(image: UploadFile = File(...), expected_values: str = Form
             ]
         )
         
-        llm = ChatGoogleGenerativeAI(model="gemini-1.5-flash")
+        llm = ChatGoogleGenerativeAI(model="gemini-2.0-flash-lite")
         ai_msg = llm.invoke([message])
         logger.info("AI message received from LLM")
         
@@ -125,7 +127,7 @@ async def process_ocr(image: UploadFile = File(...), expected_values: str = Form
             }
         )
     except Exception as e:
-        logger.error("Error during OCR processing: %s", str(e))
+        logger.error("Error during OCR processing at process_ocr: %s", str(e))
         raise HTTPException(status_code=500, detail="Internal Server Error")
 
 @router.get("/orders/")
@@ -136,7 +138,7 @@ async def get_orders():
             order["_id"] = str(order["_id"])
         return JSONResponse(content={"orders": orders})
     except Exception as e:
-        logger.error("Error fetching orders: %s", str(e))
+        logger.error("Error fetching orders at get_orders: %s", str(e))
         raise HTTPException(status_code=500, detail="Internal Server Error")
 
 @router.get("/health/")
