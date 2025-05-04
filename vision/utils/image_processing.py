@@ -7,13 +7,27 @@ from io import BytesIO
 import cv2
 import math
 from fastapi import UploadFile
+import asyncio
 
-async def segment_image(image_file, client: InferenceHTTPClient) -> Tuple[str, dict]:
+def segment_image(image_file, client: InferenceHTTPClient) -> Tuple[str, dict]:
     """
     Process image segmentation and get predictions
     Returns tuple of (output_image_path, predictions)
     """
-    image_data = await image_file.read()
+    # For binary data from a file that's already been read
+    if isinstance(image_file, bytes):
+        image_data = image_file
+    else:
+        # For handling UploadFile objects
+        if hasattr(image_file, 'read'):
+            image_data = image_file.read()
+            if asyncio.iscoroutine(image_data):
+                # We'll need to handle async behavior in a synchronous context
+                loop = asyncio.get_event_loop() if asyncio.get_event_loop().is_running() else asyncio.new_event_loop()
+                image_data = loop.run_until_complete(image_data)
+        else:
+            raise ValueError("Unsupported image_file type")
+
     encoded_image = base64.b64encode(image_data).decode("ascii")
 
     with client.use_model(model_id="grocery-dataset-q9fj2/5"):
