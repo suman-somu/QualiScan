@@ -10,20 +10,20 @@ const Dashboard = () => {
     async function fetchData() {
       try {
         const response = await axios.get('http://localhost:8000/orders/');
-        setData(response.data.orders || []); // Ensure data is always an array
+        setData(response.data.orders || []);
       } catch (error) {
         console.error('Error fetching orders:', error);
-        setData([]); // Set data to an empty array on error
+        setData([]);
       }
     }
     fetchData();
   }, []);
 
   const items = (data || []).slice((activePage - 1) * 10, activePage * 10).map((order) => (
-    <Accordion.Item key={order._id} value={order.orderid}>
+    <Accordion.Item key={order._id || order.order_id} value={order._id || order.order_id}>
       <Accordion.Control>
       <div className='flex px-5'>
-        <Text className="truncate"> Order: {order.orderid}</Text>
+        <Text className="truncate"> Order: {order.order_id || 'N/A'}</Text>
         <Badge color={order.matched ? 'green' : 'red'} style={{ marginLeft: 'auto' }}>
           {order.matched ? 'Matched' : 'Unmatched'}
         </Badge>
@@ -36,8 +36,8 @@ const Dashboard = () => {
               Expected Products:
             </Text>
             <ScrollArea style={{ width: '100%', height: 200 }}>
-              {order.expected_values.map((product, index) => (
-                <pre key={index} className="whitespace-pre-wrap break-words">{JSON.stringify(product, null, 2)}</pre>
+              {(order.expected_values || []).map((product, index) => (
+                <pre key={`expected-${index}`} className="whitespace-pre-wrap break-words">{JSON.stringify(product, (key, value) => value, 2)}</pre>
               ))}
             </ScrollArea>
           </Box>
@@ -46,8 +46,8 @@ const Dashboard = () => {
               Actual Products:
             </Text>
             <ScrollArea style={{ width: '100%', height: 200 }}>
-              {order.actual_values.map((product, index) => (
-                <pre key={index} className="whitespace-pre-wrap break-words">{JSON.stringify(product, null, 2)}</pre>
+              {(order.actual_values || []).map((product, index) => (
+                <pre key={`actual-${index}`} className="whitespace-pre-wrap break-words">{JSON.stringify(product, (key, value) => value, 2)}</pre>
               ))}
             </ScrollArea>
           </Box>
