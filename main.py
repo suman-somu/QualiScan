@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from vision.middleware import add_cors_middleware
 from vision.routes import router
-from vision.config import google_api_key, langchain_api_key, roboflow_api_key
+from vision.config.api_keys import google_api_key, langchain_api_key, roboflow_api_key
 
 app = FastAPI()
 

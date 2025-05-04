@@ -1,95 +1,59 @@
 import time
-import base64
 import os
-import logging
+import json
 from fastapi import APIRouter, UploadFile, File, Form, HTTPException
 from fastapi.responses import JSONResponse
 from langchain_core.messages import HumanMessage
 from langchain_google_genai import ChatGoogleGenerativeAI
 from inference_sdk import InferenceHTTPClient
-from .utils import draw_bounding_boxes, resize_image
-from .config import google_api_key, langchain_api_key, roboflow_api_key
-from .mongo import insert_log, db
-import json
-import random
+from .config.logging_config import configure_logging
+from .utils.image_processing import segment_image, encode_image_to_base64, draw_bounding_boxes
+from .utils.db_operations import get_next_order_id, insert_log
+from .config.mongo import db
+from .constants import IMAGE_TYPES
+from .config.roboflow import get_roboflow_client
 
-logging.basicConfig(
-    level=logging.INFO,
-    format='%(asctime)s - %(levelname)s - %(message)s',
-    datefmt='%Y-%m-%d %H:%M:%S'
-)
-logger = logging.getLogger(__name__)
 
 router = APIRouter()
 
-client = InferenceHTTPClient(
-    api_url="https://detect.roboflow.com", api_key=os.getenv("ROBOFLOW_API_KEY")
-)
-
-def get_next_order_id():
-    order_count = db["logs"].count_documents({})
-    return order_count + 1
-
-async def segment_image_and_get_predictions(image_file: UploadFile):
-    logger.info("Starting image segmentation and prediction")
-    
-    image_data = await image_file.read()
-    encoded_image = base64.b64encode(image_data).decode("ascii")
-    logger.info("Image encoded to base64")
-    
-    with client.use_model(model_id="grocery-dataset-q9fj2/5"):
-        predictions = client.infer(encoded_image)
-    logger.info("Predictions received from model")
-    
-    temp_image_path = "temp_input_image.jpg"
-    with open(temp_image_path, "wb") as f:
-        f.write(image_data)
-    logger.info("Temporary image file created")
-    
-    output_image_path = draw_bounding_boxes(temp_image_path, predictions["predictions"])
-    logger.info("Bounding boxes drawn on image")
-    
-    os.remove(temp_image_path)
-    logger.info("Temporary image file removed")
-    
-    return output_image_path
+logger = configure_logging()
+roboflow_client = get_roboflow_client()
 
 @router.post("/process-ocr/")
 async def process_ocr(image: UploadFile = File(...), expected_values: str = Form(None)):
     start_time = time.time()
     logger.info("OCR processing started")
-    
+
     try:
         # Generate orderid
         order_id = get_next_order_id()
         logger.info(f"Generated orderid: {order_id}")
 
-        #prompt
+        # Read prompt
         input_prompt_path = os.path.join(os.path.dirname(__file__), "input_prompt.txt")
         with open(input_prompt_path, "r") as file:
             input_prompt = file.read().strip()
         logger.info("Input prompt read from file")
-        
-        if image.content_type not in ["image/jpeg", "image/png", "image/jpg"]:
+
+        if image.content_type not in IMAGE_TYPES:
             logger.error("Invalid file type: %s", image.content_type)
             raise HTTPException(
                 status_code=400,
                 detail="Invalid file type. Only JPEG, JPG, and PNG are accepted.",
             )
-        
-        #image seg
-        output_image_path = await segment_image_and_get_predictions(image)
-        logger.info("Image segmentation and prediction completed")
-        
-        #img encode
-        with open(output_image_path, "rb") as img_file:
-            segmented_image_base64 = base64.b64encode(img_file.read()).decode("utf-8")
-        logger.info("Segmented image encoded to base64")
 
+        # Process image
+        temp_image_path, predictions = await segment_image(image, roboflow_client)
+        output_image_path = draw_bounding_boxes(temp_image_path, predictions["predictions"])
+        os.remove(temp_image_path)
+        logger.info("Image processing completed")
+
+        # Encode image
+        segmented_image_base64 = encode_image_to_base64(output_image_path)
         os.remove(output_image_path)
-        logger.info("Output image file removed")
-        
-        #vision model
+        logger.info("Image encoding completed")
+
+        # Call LLM
         message = HumanMessage(
             content=[
                 {"type": "text", "text": input_prompt},
@@ -101,11 +65,11 @@ async def process_ocr(image: UploadFile = File(...), expected_values: str = Form
                 },
             ]
         )
-        
+
         llm = ChatGoogleGenerativeAI(model="gemini-2.0-flash-lite")
         ai_msg = llm.invoke([message])
         logger.info("AI message received from LLM")
-        
+
         end_time = time.time()
         processing_time = end_time - start_time
         logger.info("OCR processing completed in %s seconds", processing_time)
