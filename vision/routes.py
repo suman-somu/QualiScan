@@ -40,7 +40,7 @@ async def process_ocr(image: UploadFile = File(...), expected_values: str = Form
         output_image_path = draw_bounding_boxes(temp_image_path, predictions["predictions"])
         segmented_image_base64 = encode_image_to_base64(output_image_path)
         logger.info("Image encoding completed")
-
+        # clean up
         os.remove(output_image_path)
         os.remove(temp_image_path)
 
