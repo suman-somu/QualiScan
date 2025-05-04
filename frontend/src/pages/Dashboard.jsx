@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { Accordion, Box, Group, ScrollArea, Text, Pagination, Badge } from '@mantine/core';
 import axios from 'axios';
 
-function Dashboard() {
+const Dashboard = () => {
   const [activePage, setPage] = useState(1);
   const [data, setData] = useState([]);
 
@@ -20,7 +20,7 @@ function Dashboard() {
   }, []);
 
   const items = (data || []).slice((activePage - 1) * 10, activePage * 10).map((order) => (
-    <Accordion.Item key={order.orderid} value={order.orderid}>
+    <Accordion.Item key={order._id} value={order.orderid}>
       <Accordion.Control>
       <div className='flex px-5'>
         <Text className="truncate"> Order: {order.orderid}</Text>

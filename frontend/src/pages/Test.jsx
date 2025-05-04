@@ -4,7 +4,7 @@ import { Dropzone, MIME_TYPES } from '@mantine/dropzone';
 import { Plus, Trash } from 'lucide-react';
 import { motion } from 'framer-motion';
 
-function Test() {
+const Test = () => {
   const [selectedImageFile, setSelectedImageFile] = useState(null);
   const [selectedImageURL, setSelectedImageURL] = useState(null);
   const [loading, setLoading] = useState(false);
