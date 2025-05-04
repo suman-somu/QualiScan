@@ -13,5 +13,4 @@ def parse_json_content(text: str):
     Strips code block markers and parses the JSON content.
     """
     import json
-    clean_text = strip_json_markers(text)
-    return json.loads(clean_text)
+    return json.loads(text)
