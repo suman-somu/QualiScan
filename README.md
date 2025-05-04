@@ -38,7 +38,7 @@ conda activate qualiscan
 
 Install packages with conda:
 ```sh
-conda install -c conda-forge fastapi uvicorn opencv numpy pillow python-dotenv google-generativeai langchain-core dataclasses-json google-ai-generativelanguage requests charset-normalizer backoff supervision pymongo langchain-google-genai aiohttp
+conda install -c conda-forge fastapi uvicorn opencv numpy pillow python-dotenv google-generativeai langchain-core dataclasses-json google-ai-generativelanguage requests charset-normalizer backoff supervision pymongo langchain-google-genai aiohttp celery[redis] redis
 ```
 
 Install remaining packages with pip:
@@ -70,6 +70,13 @@ pnpm run dev
 Run the main script:
 ```sh
 uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+```
+
+### Running celery: for background tasks
+
+Run the script:
+```sh
+celery -A vision.config.celery_worker.celery_app worker --loglevel=info
 ```
 
 ## Key Files and Directories
