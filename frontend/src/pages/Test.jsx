@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Button, Container, Text, Group, Stack, TextInput, LoadingOverlay, Card, Accordion, ActionIcon, Image } from '@mantine/core';
 import { Dropzone, MIME_TYPES } from '@mantine/dropzone';
-import { Plus, Trash } from 'lucide-react';
+import { Trash } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 const Test = () => {
@@ -93,22 +93,6 @@ const Test = () => {
     const newProducts = [...products];
     newProducts[index][field] = value;
     setProducts(newProducts);
-  };
-
-  const handleAddProduct = () => {
-    setProducts([
-      ...products,
-      {
-        manufacturer: '',
-        productName: '',
-        ingredients: '',
-        manufacturingDate: '',
-        expiryDate: '',
-        netWeight: '',
-        barcode: '',
-        otherDetails: '',
-      },
-    ]);
   };
 
   const handleRemoveProduct = (index) => {
@@ -206,15 +190,6 @@ const Test = () => {
               ))}
             </Accordion>
             <Group position="center" mt="md">
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.3 }}
-              >
-                <Button className='rounded-lg' onClick={handleAddProduct} leftIcon={<Plus size={16} />} size="md">
-                  Add Another Product
-                </Button>
-              </motion.div>
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
