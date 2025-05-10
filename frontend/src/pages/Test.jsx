@@ -3,7 +3,8 @@ import { Button, Container, Text, Group, Stack, TextInput, LoadingOverlay, Card,
 import { Dropzone, MIME_TYPES } from '@mantine/dropzone';
 import { Trash } from 'lucide-react';
 import { motion } from 'framer-motion';
-import defaultExamples from './default_values.json';
+import defaultExamples from '/src/constants/default_values.json';
+import ImageCard from '/src/components/ImageCard';
 
 const Test = () => {
   const [selectedImageFile, setSelectedImageFile] = useState(null);
@@ -142,7 +143,7 @@ const Test = () => {
   };
 
   return (
-    <Container className='h-full w-full flex flex-col p-10'>
+    <Container className='h-full w-full flex flex-col p-6'>
       <LoadingOverlay
         visible={loading}
         zIndex={1000}
@@ -150,50 +151,34 @@ const Test = () => {
         loaderProps={{ color: 'blue', type: 'bars' }}
         style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100vh' }}
       />
-      <div className="flex gap-4 w-full">
-        <div className="w-1/3 flex flex-col gap-4 justify-center">
+      <div className="flex gap-6 w-full">
+        <div className="w-1/3 flex flex-col gap-4 p-4 rounded-lg">
           <Text size="lg" weight={500} className="mb-4">Default Examples</Text>
-          <div className="flex flex-col gap-2">
+          <div className="grid grid-cols-2 gap-4 w-full">
             {defaultExampleImages.map((example, index) => (
-              <motion.div
-                key={index}
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-              >
-                <Card
-                  shadow="sm"
-                  padding="sm"
-                  className="cursor-pointer"
+              <div key={index} className="min-w-0">
+                <ImageCard
+                  example={example}
                   onClick={() => handleDefaultExampleSelect(example)}
-                >
-                  <Image
-                    src={`/src/assets/default_examples/${example.image}`}
-                    alt={example.image}
-                    height={100}
-                    width={150}
-                    fit="contain"
-                    style={{ maxWidth: '100%', maxHeight: '100px' }}
-                  />
-                  <Text size="sm" className="mt-2 truncate">{example.image}</Text>
-                </Card>
-              </motion.div>
+                />
+              </div>
             ))}
           </div>
         </div>
-        <div className="grow">
-          <Stack align="center" spacing="md" className="w-full p-4">
+        <div className="grow p-4 bg-white rounded-lg shadow-sm">
+          <Stack align="center" spacing="md" className="w-full">
             <Dropzone
               onDrop={handleImageUpload}
               accept={[MIME_TYPES.png, MIME_TYPES.jpeg]}
               multiple={false}
-              className="w-full border-2 border-dashed border-border p-8 text-center mb-4 rounded-lg"
+              className="w-full border-2 border-dashed border-gray-300 p-8 text-center mb-4 rounded-lg hover:border-blue-500 transition-colors"
             >
               <Text align="center" c="textSecondary">Drag & Drop an image here</Text>
               <Text align="center" c="textSecondary">or</Text>
-              <Button mt="sm" className="bg-button hover:bg-buttonHover" size="md">Upload Image</Button>
+              <Button mt="sm" className="bg-blue-600 hover:bg-blue-700" size="md">Upload Image</Button>
             </Dropzone>
             {selectedImageURL && (
-              <div className="w-full mt-4">
+              <div className="w-full mt-4 p-4 bg-gray-50 rounded-lg">
                 <Text c="gray">Selected Image: {selectedImageFile.name}</Text>
                 <Image src={selectedImageURL} alt="Selected" className="mt-4" style={{ maxWidth: '100%', maxHeight: '300px', objectFit: 'contain' }} />
                 <Group mt="sm" position="center">
@@ -207,7 +192,7 @@ const Test = () => {
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ duration: 0.3 }}
                     >
-                      <Accordion.Item label={`Product ${index + 1}`}>
+                      <Accordion.Item label={`Product ${index + 1}`} className="mb-2">
                         <Card shadow="sm" padding="lg" className="w-full">
                           <Stack spacing="sm">
                             <TextInput
@@ -251,7 +236,7 @@ const Test = () => {
                               onChange={(e) => handleProductChange(index, 'otherDetails', e.target.value)}
                             />
                             <Group position="right" mt="md">
-                              <ActionIcon className="text-textPrimary hover:text-textSecondary p-2" onClick={() => handleRemoveProduct(index)}>
+                              <ActionIcon className="text-red-500 hover:text-red-700 p-2" onClick={() => handleRemoveProduct(index)}>
                                 <Trash size={16} />
                               </ActionIcon>
                             </Group>
@@ -267,7 +252,7 @@ const Test = () => {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.3 }}
                   >
-                    <Button className='rounded-lg' onClick={handleProcessImage} size="md">
+                    <Button className='rounded-lg bg-blue-600 hover:bg-blue-700' onClick={handleProcessImage} size="md">
                       Process
                     </Button>
                   </motion.div>

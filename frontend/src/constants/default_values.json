@@ -1,0 +1,171 @@
+[
+  {
+    "image": "example-1.jpg",
+    "values": {
+      "manufacturer": "Example Manufacturer",
+      "productName": "Example Product",
+      "ingredients": "Example Ingredients",
+      "manufacturingDate": "2023-01-01",
+      "expiryDate": "2024-01-01",
+      "netWeight": "100g",
+      "barcode": "123456789",
+      "otherDetails": "Example Details"
+    }
+  },
+  {
+    "image": "example-2.jpg",
+    "values": {
+      "manufacturer": "Another Manufacturer",
+      "productName": "Another Product",
+      "ingredients": "Another Ingredients",
+      "manufacturingDate": "2023-02-01",
+      "expiryDate": "2024-02-01",
+      "netWeight": "200g",
+      "barcode": "987654321",
+      "otherDetails": "Another Details"
+    }
+  },
+  {
+    "image": "example-3.jpg",
+    "values": {
+      "manufacturer": "Sample Foods Inc.",
+      "productName": "Sample Snack",
+      "ingredients": "Wheat, Sugar, Salt",
+      "manufacturingDate": "2023-03-15",
+      "expiryDate": "2024-03-15",
+      "netWeight": "150g",
+      "barcode": "111222333",
+      "otherDetails": "Keep in a cool place"
+    }
+  },
+  {
+    "image": "example-4.jpg",
+    "values": {
+      "manufacturer": "Tasty Treats",
+      "productName": "Tasty Bar",
+      "ingredients": "Oats, Honey, Almonds",
+      "manufacturingDate": "2023-04-10",
+      "expiryDate": "2024-04-10",
+      "netWeight": "50g",
+      "barcode": "444555666",
+      "otherDetails": "Contains nuts"
+    }
+  },
+  {
+    "image": "example-5.jpg",
+    "values": {
+      "manufacturer": "Healthy Co.",
+      "productName": "Health Drink",
+      "ingredients": "Water, Fruit Extract, Sugar",
+      "manufacturingDate": "2023-05-05",
+      "expiryDate": "2024-05-05",
+      "netWeight": "500ml",
+      "barcode": "777888999",
+      "otherDetails": "Shake well before use"
+    }
+  },
+  {
+    "image": "example-6.jpg",
+    "values": {
+      "manufacturer": "Fresh Farms",
+      "productName": "Fresh Juice",
+      "ingredients": "Apple, Orange, Mango",
+      "manufacturingDate": "2023-06-20",
+      "expiryDate": "2024-06-20",
+      "netWeight": "1L",
+      "barcode": "123123123",
+      "otherDetails": "No added preservatives"
+    }
+  },
+  {
+    "image": "example-7.jpg",
+    "values": {
+      "manufacturer": "Snacky Snacks",
+      "productName": "Crunchy Chips",
+      "ingredients": "Potato, Oil, Salt",
+      "manufacturingDate": "2023-07-12",
+      "expiryDate": "2024-07-12",
+      "netWeight": "75g",
+      "barcode": "321321321",
+      "otherDetails": "Gluten free"
+    }
+  },
+  {
+    "image": "example-8.jpg",
+    "values": {
+      "manufacturer": "Dairy Best",
+      "productName": "Yogurt Cup",
+      "ingredients": "Milk, Bacterial Culture, Sugar",
+      "manufacturingDate": "2023-08-08",
+      "expiryDate": "2024-08-08",
+      "netWeight": "120g",
+      "barcode": "456456456",
+      "otherDetails": "Keep refrigerated"
+    }
+  },
+  {
+    "image": "example-9.jpg",
+    "values": {
+      "manufacturer": "Sweet Tooth",
+      "productName": "Chocolate Bar",
+      "ingredients": "Cocoa, Sugar, Milk",
+      "manufacturingDate": "2023-09-01",
+      "expiryDate": "2024-09-01",
+      "netWeight": "40g",
+      "barcode": "654654654",
+      "otherDetails": "May contain traces of nuts"
+    }
+  },
+  {
+    "image": "example-10.jpg",
+    "values": {
+      "manufacturer": "Baker's Delight",
+      "productName": "Bread Loaf",
+      "ingredients": "Flour, Yeast, Salt, Water",
+      "manufacturingDate": "2023-10-18",
+      "expiryDate": "2023-10-25",
+      "netWeight": "400g",
+      "barcode": "789789789",
+      "otherDetails": "Best before date on pack"
+    }
+  },
+  {
+    "image": "example-11.jpg",
+    "values": {
+      "manufacturer": "Veggie Fresh",
+      "productName": "Mixed Salad",
+      "ingredients": "Lettuce, Tomato, Cucumber, Carrot",
+      "manufacturingDate": "2023-11-11",
+      "expiryDate": "2023-11-18",
+      "netWeight": "250g",
+      "barcode": "987987987",
+      "otherDetails": "Wash before use"
+    }
+  },
+  {
+    "image": "example-12.jpg",
+    "values": {
+      "manufacturer": "Fruit Basket",
+      "productName": "Fruit Mix",
+      "ingredients": "Apple, Banana, Grape, Orange",
+      "manufacturingDate": "2023-12-05",
+      "expiryDate": "2023-12-12",
+      "netWeight": "300g",
+      "barcode": "159159159",
+      "otherDetails": "Consume within 2 days of opening"
+    }
+  },
+  {
+    "image": "example-13.jpg",
+    "values": {
+      "manufacturer": "Energy Plus",
+      "productName": "Energy Drink",
+      "ingredients": "Water, Sugar, Caffeine, Flavour",
+      "manufacturingDate": "2024-01-01",
+      "expiryDate": "2025-01-01",
+      "netWeight": "330ml",
+      "barcode": "753753753",
+      "otherDetails": "High caffeine content"
+    }
+  }
+]
