@@ -3,6 +3,7 @@ import { Button, Container, Text, Group, Stack, TextInput, LoadingOverlay, Card,
 import { Dropzone, MIME_TYPES } from '@mantine/dropzone';
 import { Trash } from 'lucide-react';
 import { motion } from 'framer-motion';
+import defaultExamples from './default_values.json';
 
 const Test = () => {
   const [selectedImageFile, setSelectedImageFile] = useState(null);
@@ -20,6 +21,7 @@ const Test = () => {
       otherDetails: '',
     },
   ]);
+  const [defaultExampleImages, setDefaultExampleImages] = useState([]);
 
   useEffect(() => {
     if (loading) {
@@ -28,6 +30,30 @@ const Test = () => {
       document.body.style.overflow = 'auto';
     }
   }, [loading]);
+
+  useEffect(() => {
+    // Load default example images
+    const loadDefaultExamples = async () => {
+      try {
+        const examples = await Promise.all(
+          defaultExamples.map(async (example) => {
+            const response = await fetch(`/src/assets/default_examples/${example.image}`);
+            const blob = await response.blob();
+            return {
+              ...example,
+              file: new File([blob], example.image, { type: blob.type }),
+              url: URL.createObjectURL(blob)
+            };
+          })
+        );
+        setDefaultExampleImages(examples);
+      } catch (error) {
+        console.error('Error loading default examples:', error);
+      }
+    };
+
+    loadDefaultExamples();
+  }, []);
 
   const handleImageUpload = (files) => {
     const file = files[0];
@@ -100,6 +126,21 @@ const Test = () => {
     setProducts(newProducts);
   };
 
+  const handleDefaultExampleSelect = (example) => {
+    setSelectedImageFile(example.file);
+    setSelectedImageURL(example.url);
+    setProducts([{
+      manufacturer: example.values.manufacturer,
+      productName: example.values.productName,
+      ingredients: example.values.ingredients,
+      manufacturingDate: example.values.manufacturingDate,
+      expiryDate: example.values.expiryDate,
+      netWeight: example.values.netWeight,
+      barcode: example.values.barcode,
+      otherDetails: example.values.otherDetails,
+    }]);
+  };
+
   return (
     <Container className='h-full w-full flex flex-col p-10'>
       <LoadingOverlay
@@ -109,100 +150,133 @@ const Test = () => {
         loaderProps={{ color: 'blue', type: 'bars' }}
         style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100vh' }}
       />
-      <Stack align="center" spacing="md" className="w-full p-4">
-        <Dropzone
-          onDrop={handleImageUpload}
-          accept={[MIME_TYPES.png, MIME_TYPES.jpeg]}
-          multiple={false}
-          className="w-full border-2 border-dashed border-border p-8 text-center mb-4 rounded-lg"
-        >
-          <Text align="center" c="textSecondary">Drag & Drop an image here</Text>
-          <Text align="center" c="textSecondary">or</Text>
-          <Button mt="sm" className="bg-button hover:bg-buttonHover" size="md">Upload Image</Button>
-        </Dropzone>
-        {selectedImageURL && (
-          <div className="w-full mt-4">
-            <Text c="gray">Selected Image: {selectedImageFile.name}</Text>
-            <Image src={selectedImageURL} alt="Selected" className="mt-4" style={{ maxWidth: '100%', maxHeight: '300px', objectFit: 'contain' }} />
-            <Group mt="sm" position="center">
-              <Button color="red" onClick={handleDiscardImage} size="md">Discard</Button>
-            </Group>
-            <Accordion mt="md" className="w-full">
-              {products.map((product, index) => (
-                <motion.div
-                  key={index}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.3 }}
-                >
-                  <Accordion.Item label={`Product ${index + 1}`}>
-                    <Card shadow="sm" padding="lg" className="w-full">
-                      <Stack spacing="sm">
-                        <TextInput
-                          label="Manufacturer"
-                          value={product.manufacturer}
-                          onChange={(e) => handleProductChange(index, 'manufacturer', e.target.value)}
-                        />
-                        <TextInput
-                          label="Product Name"
-                          value={product.productName}
-                          onChange={(e) => handleProductChange(index, 'productName', e.target.value)}
-                        />
-                        <TextInput
-                          label="Ingredients"
-                          value={product.ingredients}
-                          onChange={(e) => handleProductChange(index, 'ingredients', e.target.value)}
-                        />
-                        <TextInput
-                          label="Manufacturing Date"
-                          value={product.manufacturingDate}
-                          onChange={(e) => handleProductChange(index, 'manufacturingDate', e.target.value)}
-                        />
-                        <TextInput
-                          label="Expiry Date"
-                          value={product.expiryDate}
-                          onChange={(e) => handleProductChange(index, 'expiryDate', e.target.value)}
-                        />
-                        <TextInput
-                          label="Net Weight"
-                          value={product.netWeight}
-                          onChange={(e) => handleProductChange(index, 'netWeight', e.target.value)}
-                        />
-                        <TextInput
-                          label="Barcode"
-                          value={product.barcode}
-                          onChange={(e) => handleProductChange(index, 'barcode', e.target.value)}
-                        />
-                        <TextInput
-                          label="Other Details"
-                          value={product.otherDetails}
-                          onChange={(e) => handleProductChange(index, 'otherDetails', e.target.value)}
-                        />
-                        <Group position="right" mt="md">
-                          <ActionIcon className="text-textPrimary hover:text-textSecondary p-2" onClick={() => handleRemoveProduct(index)}>
-                            <Trash size={16} />
-                          </ActionIcon>
-                        </Group>
-                      </Stack>
-                    </Card>
-                  </Accordion.Item>
-                </motion.div>
-              ))}
-            </Accordion>
-            <Group position="center" mt="md">
+      <div className="flex gap-4 w-full">
+        <div className="w-1/3 flex flex-col gap-4 justify-center">
+          <Text size="lg" weight={500} className="mb-4">Default Examples</Text>
+          <div className="flex flex-col gap-2">
+            {defaultExampleImages.map((example, index) => (
               <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.3 }}
+                key={index}
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
               >
-                <Button className='rounded-lg' onClick={handleProcessImage} size="md">
-                  Process
-                </Button>
+                <Card
+                  shadow="sm"
+                  padding="sm"
+                  className="cursor-pointer"
+                  onClick={() => handleDefaultExampleSelect(example)}
+                >
+                  <Image
+                    src={`/src/assets/default_examples/${example.image}`}
+                    alt={example.image}
+                    height={100}
+                    width={150}
+                    fit="contain"
+                    style={{ maxWidth: '100%', maxHeight: '100px' }}
+                  />
+                  <Text size="sm" className="mt-2 truncate">{example.image}</Text>
+                </Card>
               </motion.div>
-            </Group>
+            ))}
           </div>
-        )}
-      </Stack>
+        </div>
+        <div className="grow">
+          <Stack align="center" spacing="md" className="w-full p-4">
+            <Dropzone
+              onDrop={handleImageUpload}
+              accept={[MIME_TYPES.png, MIME_TYPES.jpeg]}
+              multiple={false}
+              className="w-full border-2 border-dashed border-border p-8 text-center mb-4 rounded-lg"
+            >
+              <Text align="center" c="textSecondary">Drag & Drop an image here</Text>
+              <Text align="center" c="textSecondary">or</Text>
+              <Button mt="sm" className="bg-button hover:bg-buttonHover" size="md">Upload Image</Button>
+            </Dropzone>
+            {selectedImageURL && (
+              <div className="w-full mt-4">
+                <Text c="gray">Selected Image: {selectedImageFile.name}</Text>
+                <Image src={selectedImageURL} alt="Selected" className="mt-4" style={{ maxWidth: '100%', maxHeight: '300px', objectFit: 'contain' }} />
+                <Group mt="sm" position="center">
+                  <Button color="red" onClick={handleDiscardImage} size="md">Discard</Button>
+                </Group>
+                <Accordion mt="md" className="w-full">
+                  {products.map((product, index) => (
+                    <motion.div
+                      key={index}
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.3 }}
+                    >
+                      <Accordion.Item label={`Product ${index + 1}`}>
+                        <Card shadow="sm" padding="lg" className="w-full">
+                          <Stack spacing="sm">
+                            <TextInput
+                              label="Manufacturer"
+                              value={product.manufacturer}
+                              onChange={(e) => handleProductChange(index, 'manufacturer', e.target.value)}
+                            />
+                            <TextInput
+                              label="Product Name"
+                              value={product.productName}
+                              onChange={(e) => handleProductChange(index, 'productName', e.target.value)}
+                            />
+                            <TextInput
+                              label="Ingredients"
+                              value={product.ingredients}
+                              onChange={(e) => handleProductChange(index, 'ingredients', e.target.value)}
+                            />
+                            <TextInput
+                              label="Manufacturing Date"
+                              value={product.manufacturingDate}
+                              onChange={(e) => handleProductChange(index, 'manufacturingDate', e.target.value)}
+                            />
+                            <TextInput
+                              label="Expiry Date"
+                              value={product.expiryDate}
+                              onChange={(e) => handleProductChange(index, 'expiryDate', e.target.value)}
+                            />
+                            <TextInput
+                              label="Net Weight"
+                              value={product.netWeight}
+                              onChange={(e) => handleProductChange(index, 'netWeight', e.target.value)}
+                            />
+                            <TextInput
+                              label="Barcode"
+                              value={product.barcode}
+                              onChange={(e) => handleProductChange(index, 'barcode', e.target.value)}
+                            />
+                            <TextInput
+                              label="Other Details"
+                              value={product.otherDetails}
+                              onChange={(e) => handleProductChange(index, 'otherDetails', e.target.value)}
+                            />
+                            <Group position="right" mt="md">
+                              <ActionIcon className="text-textPrimary hover:text-textSecondary p-2" onClick={() => handleRemoveProduct(index)}>
+                                <Trash size={16} />
+                              </ActionIcon>
+                            </Group>
+                          </Stack>
+                        </Card>
+                      </Accordion.Item>
+                    </motion.div>
+                  ))}
+                </Accordion>
+                <Group position="center" mt="md">
+                  <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.3 }}
+                  >
+                    <Button className='rounded-lg' onClick={handleProcessImage} size="md">
+                      Process
+                    </Button>
+                  </motion.div>
+                </Group>
+              </div>
+            )}
+          </Stack>
+        </div>
+      </div>
     </Container>
   );
 }
