@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Button, Container, Text, Group, Stack, TextInput, LoadingOverlay, Card, Accordion, ActionIcon, Image } from '@mantine/core';
+import { Button, Container, Text, Group, Stack, TextInput, LoadingOverlay, Card, Accordion, ActionIcon, Image, SimpleGrid, Paper } from '@mantine/core';
 import { Dropzone, MIME_TYPES } from '@mantine/dropzone';
 import { Trash } from 'lucide-react';
 import { motion } from 'framer-motion';
@@ -143,30 +143,35 @@ const Test = () => {
   };
 
   return (
-    <Container className='h-full w-full flex flex-col p-6'>
+    <Container p="md" h="100%" w="100%" display="flex" style={{ flexDirection: 'column' }}>
       <LoadingOverlay
         visible={loading}
         zIndex={1000}
         overlayProps={{ radius: 'sm', blur: 2 }}
         loaderProps={{ color: 'blue', type: 'bars' }}
-        style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100vh' }}
+        pos="fixed"
+        top={0}
+        left={0}
+        w="100%"
+        h="100vh"
       />
-      <div className="flex gap-6 w-full">
-        <div className="w-1/3 flex flex-col gap-4 p-4 rounded-lg">
-          <Text size="lg" weight={500} className="mb-4">Default Examples</Text>
-          <div className="grid grid-cols-2 gap-4 w-full">
-            {defaultExampleImages.map((example, index) => (
-              <div key={index} className="min-w-0">
+      <Group gap="lg" w="100%" style={{ flex: 1 }}>
+        <Paper p="md" withBorder w="33%">
+          <Stack gap="md">
+            <Text size="lg" fw={500}>Default Examples</Text>
+            <SimpleGrid cols={2} spacing="md">
+              {defaultExampleImages.map((example, index) => (
                 <ImageCard
+                  key={index}
                   example={example}
                   onClick={() => handleDefaultExampleSelect(example)}
                 />
-              </div>
-            ))}
-          </div>
-        </div>
-        <div className="grow p-4 bg-white rounded-lg shadow-sm">
-          <Stack align="center" spacing="md" className="w-full">
+              ))}
+            </SimpleGrid>
+          </Stack>
+        </Paper>
+        <Paper p="md" radius="md" shadow="sm" style={{ flexGrow: 1, display: 'flex', flexDirection: 'column' }}>
+          <Stack align="center" spacing="md" w="100%" style={{ flexGrow: 1 }}>
             <Dropzone
               onDrop={handleImageUpload}
               accept={[MIME_TYPES.png, MIME_TYPES.jpeg]}
@@ -260,8 +265,8 @@ const Test = () => {
               </div>
             )}
           </Stack>
-        </div>
-      </div>
+        </Paper>
+      </Group>
     </Container>
   );
 }
