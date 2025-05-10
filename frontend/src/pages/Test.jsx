@@ -125,23 +125,23 @@ const Test = () => {
         loaderProps={{ color: 'blue', type: 'bars' }}
         style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100vh' }}
       />
-      <Stack align="center" spacing="md" className="w-full">
+      <Stack align="center" spacing="md" className="w-full p-4">
         <Dropzone
           onDrop={handleImageUpload}
           accept={[MIME_TYPES.png, MIME_TYPES.jpeg]}
           multiple={false}
-          className="w-full border-2 border-dashed border-gray-300 p-8 text-center mb-4 rounded-lg"
+          className="w-full border-2 border-dashed border-border p-8 text-center mb-4 rounded-lg"
         >
-          <Text align="center" c="gray">Drag & Drop an image here</Text>
-          <Text align="center" c="gray">or</Text>
-          <Button mt="sm" color="blue" size="lg">Upload Image</Button>
+          <Text align="center" c="textSecondary">Drag & Drop an image here</Text>
+          <Text align="center" c="textSecondary">or</Text>
+          <Button mt="sm" className="bg-button hover:bg-buttonHover" size="md">Upload Image</Button>
         </Dropzone>
         {selectedImageURL && (
           <div className="w-full mt-4">
             <Text c="gray">Selected Image: {selectedImageFile.name}</Text>
             <Image src={selectedImageURL} alt="Selected" className="mt-4" style={{ maxWidth: '100%', maxHeight: '300px', objectFit: 'contain' }} />
             <Group mt="sm" position="center">
-              <Button color="red" onClick={handleDiscardImage} size="lg">Discard</Button>
+              <Button color="red" onClick={handleDiscardImage} size="md">Discard</Button>
             </Group>
             <Accordion mt="md" className="w-full">
               {products.map((product, index) => (
@@ -195,7 +195,7 @@ const Test = () => {
                           onChange={(e) => handleProductChange(index, 'otherDetails', e.target.value)}
                         />
                         <Group position="right" mt="md">
-                          <ActionIcon color="red" onClick={() => handleRemoveProduct(index)}>
+                          <ActionIcon className="text-textPrimary hover:text-textSecondary p-2" onClick={() => handleRemoveProduct(index)}>
                             <Trash size={16} />
                           </ActionIcon>
                         </Group>
@@ -211,7 +211,7 @@ const Test = () => {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.3 }}
               >
-                <Button color="blue" onClick={handleAddProduct} leftIcon={<Plus size={16} />} size="lg">
+                <Button className='rounded-lg' onClick={handleAddProduct} leftIcon={<Plus size={16} />} size="md">
                   Add Another Product
                 </Button>
               </motion.div>
@@ -220,7 +220,7 @@ const Test = () => {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.3 }}
               >
-                <Button color="green" onClick={handleProcessImage} size="lg">
+                <Button className='rounded-lg' onClick={handleProcessImage} size="md">
                   Process
                 </Button>
               </motion.div>

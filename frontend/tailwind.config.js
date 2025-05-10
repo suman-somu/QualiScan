@@ -4,14 +4,19 @@ export default {
   theme: {
     extend: {
       colors: {
-        primary: '#0d47a1', // Dark Blue
-        secondary: '#1565c0', // Medium Blue
-        accent: '#42a5f5', // Light Blue
-        highlight: '#90caf9', // Very Light Blue
-        background: '#e3f2fd', // Light Background
-        text: '#0d47a1', // Dark Blue Text
-        button: '#1e88e5', // Blue
-        buttonHover: '#1565c0', // Darker Blue
+        primary: '#0A0A0A',
+        secondary: '#1A1A1A',
+        secondaryLight: '#2E2E2E',
+        accent: '#FAFAFA',
+        highlight: '#F0F0F0',
+        background: '#FFFFFF',
+        surface: '#EDEDED',
+        textPrimary: '#0A0A0A',
+        textSecondary: '#4B4B4B',
+        border: '#D4D4D4',
+        button: '#000000',
+        buttonHover: '#1A1A1A',
+        disabled: '#B0B0B0',
       },
     },
   },

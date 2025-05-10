@@ -6,7 +6,7 @@ import Header from './components/Header';
 function App() {
   return (
     <Router>
-      <div className="w-screen h-screen flex flex-col bg-background text-text">
+      <div className="w-screen h-screen flex flex-col bg-background text-textPrimary">
         <Header />
         <div className="flex grow h-full w-full">
           <main className="grow w-full h-full p-4">

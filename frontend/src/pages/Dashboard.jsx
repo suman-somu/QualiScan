@@ -57,11 +57,11 @@ const Dashboard = () => {
   ));
 
   return (
-    <div className="w-full min-h-full h-fit border border-gray-300 rounded-lg p-2 overflow-auto flex flex-col gap-4 items-center justify-between overflow-y-hidden ">
-      <Accordion defaultValue="O001" className='w-full grow' >
+    <div className="w-full min-h-full h-fit border border-border bg-surface rounded-lg p-2 overflow-auto flex flex-col gap-4 items-center justify-between overflow-y-hidden">
+      <Accordion defaultValue="O001" className="w-full grow">
         {items}
       </Accordion>
-      <Pagination total={Math.ceil(data.length / 10)} value={activePage} onChange={setPage} size={'lg'} />
+      <Pagination total={Math.ceil(data.length / 10)} value={activePage} onChange={setPage} size="lg" />
     </div>
   );
 }
