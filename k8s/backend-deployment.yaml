@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: backend
-        image: your-dockerhub-username/qualiscan-backend:latest
+        image: sumansahoo/qualiscan-backend:latest
         ports:
         - containerPort: 8000
         envFrom:

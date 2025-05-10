@@ -14,6 +14,6 @@ spec:
     spec:
       containers:
       - name: frontend
-        image: your-dockerhub-username/qualiscan-frontend:latest
+        image: sumansahoo/qualiscan-frontend:latest
         ports:
         - containerPort: 80

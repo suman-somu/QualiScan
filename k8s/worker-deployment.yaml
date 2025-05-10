@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: worker
-        image: your-dockerhub-username/qualiscan-backend:latest
+        image: sumansahoo/qualiscan-backend:latest
         command: ["celery", "-A", "vision.config.celery_worker.celery_app", "worker", "--loglevel=info"]
         envFrom:
         - secretRef:
