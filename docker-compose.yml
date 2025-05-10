@@ -1,0 +1,45 @@
+version: "3.8"
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: vision/Dockerfile
+    volumes:
+      - .:/app
+      - temp-data:/app/vision/temp
+    env_file:
+      - .env
+    ports:
+      - "8000:8000"
+    depends_on:
+      - redis
+
+  worker:
+    build:
+      context: .
+      dockerfile: vision/Dockerfile
+    command: celery -A vision.config.celery_worker.celery_app worker --loglevel=info
+    env_file:
+      - .env
+    depends_on:
+      - redis
+    volumes:
+      - .:/app
+      - temp-data:/app/vision/temp
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
+
+  redis:
+    image: redis:7
+    # ports:
+    #   - "6379:6379"
+
+volumes:
+  temp-data:
