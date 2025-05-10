@@ -40,12 +40,21 @@ async def process_ocr(image: UploadFile = File(...), expected_values: str = Form
         raise HTTPException(status_code=500, detail="Internal Server Error")
 
 @router.get("/orders/")
-async def get_orders():
+async def get_orders(page: int = 1, limit: int = 10):
     try:
-        orders = list(db["logs"].find())
+        skip = (page - 1) * limit
+        total_orders = db["logs"].count_documents({})
+        orders = list(db["logs"].find().skip(skip).limit(limit))
         for order in orders:
             order["_id"] = str(order["_id"])
-        return JSONResponse(content={"orders": orders})
+        return JSONResponse(
+            content={
+                "orders": orders,
+                "total": total_orders,
+                "page": page,
+                "limit": limit,
+            }
+        )
     except Exception as e:
         logger.error("Error fetching orders at get_orders: %s", str(e))
         raise HTTPException(status_code=500, detail="Internal Server Error")

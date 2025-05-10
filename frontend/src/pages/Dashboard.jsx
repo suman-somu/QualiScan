@@ -1,32 +1,40 @@
 import { useState, useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { Accordion, Box, Group, ScrollArea, Text, Pagination, Badge } from '@mantine/core';
 import axios from 'axios';
 
 const Dashboard = () => {
-  const [activePage, setPage] = useState(1);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const page = parseInt(searchParams.get('page') || '1', 10);
   const [data, setData] = useState([]);
+  const [totalPages, setTotalPages] = useState(1);
 
   useEffect(() => {
     async function fetchData() {
       try {
-        const response = await axios.get('http://localhost:8000/orders/');
+        const response = await axios.get(`http://localhost:8000/orders/?page=${page}&limit=10`);
         setData(response.data.orders || []);
+        setTotalPages(Math.ceil(response.data.total / response.data.limit));
       } catch (error) {
         console.error('Error fetching orders:', error);
         setData([]);
       }
     }
     fetchData();
-  }, []);
+  }, [page]);
 
-  const items = (data || []).slice((activePage - 1) * 10, activePage * 10).map((order) => (
+  const handlePageChange = (newPage) => {
+    setSearchParams({ page: newPage });
+  };
+
+  const items = (data || []).map((order) => (
     <Accordion.Item key={order._id || order.order_id} value={order._id || order.order_id}>
       <Accordion.Control>
-      <div className='flex px-5'>
-        <Text className="truncate"> Order: {order.order_id || 'N/A'}</Text>
-        <Badge color={order.matched ? 'green' : 'red'} style={{ marginLeft: 'auto' }}>
-          {order.matched ? 'Matched' : 'Unmatched'}
-        </Badge>
+        <div className='flex px-5'>
+          <Text className="truncate"> Order: {order.order_id || 'N/A'}</Text>
+          <Badge color={order.matched ? 'green' : 'red'} style={{ marginLeft: 'auto' }}>
+            {order.matched ? 'Matched' : 'Unmatched'}
+          </Badge>
         </div>
       </Accordion.Control>
       <Accordion.Panel>
@@ -61,9 +69,9 @@ const Dashboard = () => {
       <Accordion defaultValue="O001" className="w-full grow">
         {items}
       </Accordion>
-      <Pagination total={Math.ceil(data.length / 10)} value={activePage} onChange={setPage} size="lg" />
+      <Pagination total={totalPages} value={page} onChange={handlePageChange} size="lg" />
     </div>
   );
-}
+};
 
 export default Dashboard;
