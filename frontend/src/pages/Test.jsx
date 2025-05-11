@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Button, Container, Text, Group, Stack, TextInput, LoadingOverlay, Card, Accordion, ActionIcon, Image, SimpleGrid, Paper } from '@mantine/core';
 import { Dropzone, MIME_TYPES } from '@mantine/dropzone';
-import { Trash } from 'lucide-react';
+import { Trash, Plus } from 'lucide-react';
 import { motion } from 'framer-motion';
 import defaultExamples from '/src/constants/default_values.json';
 import ImageCard from '/src/components/ImageCard';
@@ -33,7 +33,6 @@ const Test = () => {
   }, [loading]);
 
   useEffect(() => {
-    // Load default example images
     const loadDefaultExamples = async () => {
       try {
         const examples = await Promise.all(
@@ -141,6 +140,24 @@ const Test = () => {
       otherDetails: example.values.otherDetails,
     }]);
   };
+
+
+  const handleAddProduct = () => {
+    setProducts([
+      ...products,
+      {
+        manufacturer: '',
+        productName: '',
+        ingredients: '',
+        manufacturingDate: '',
+        expiryDate: '',
+        netWeight: '',
+        barcode: '',
+        otherDetails: '',
+      },
+    ]);
+  };
+
 
   return (
     <Container p="md" h="100%" w="100%" display="flex" style={{ flexDirection: 'column' }}>
@@ -252,6 +269,16 @@ const Test = () => {
                   ))}
                 </Accordion>
                 <Group position="center" mt="md">
+                <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.3 }}
+              >
+                <Button className='rounded-lg' onClick={handleAddProduct} leftIcon={<Plus size={16} />} size="md">
+                  Add Another Product
+                </Button>
+              </motion.div>
+
                   <motion.div
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
