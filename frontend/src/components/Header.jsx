@@ -1,18 +1,19 @@
+import { Button, Group, Text } from '@mantine/core';
 import { Link } from 'react-router-dom';
 
 function Header() {
   return (
-    <header className="w-full h-auto p-4 pr-8 bg-primary text-accent flex justify-between items-center shadow-md transition-colors duration-300">
-      <div className="text-2xl font-bold transition-transform duration-300 hover:scale-105">QualiScan</div>
-      <div className="flex gap-4">
-        <Link to="/" className="transition-transform duration-300 hover:scale-105">
-          <button className="bg-secondary text-accent py-2 px-4 rounded shadow-md transition-transform duration-300 hover:translate-y-[-2px] hover:shadow-lg hover:bg-secondaryLight">Home</button>
+    <Group justify="space-between" align="center"  p="md" bg="blue.8" c="white">
+      <Text fz="xl" fw="bold" c="white">QualiScan</Text>
+      <Group gap="md">
+        <Link to="/">
+          <Button variant="filled" color="blue.6">Dashboard</Button>
         </Link>
-        <Link to="/test" className="transition-transform duration-300 hover:scale-105">
-          <button className="bg-secondary text-accent py-2 px-4 rounded shadow-md transition-transform duration-300 hover:translate-y-[-2px] hover:shadow-lg hover:bg-secondaryLight">Test</button>
+        <Link to="/test">
+          <Button variant="filled" color="blue.6">Test</Button>
         </Link>
-      </div>
-    </header>
+      </Group>
+    </Group>
   );
 }
 

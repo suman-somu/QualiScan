@@ -1,22 +1,34 @@
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import { AppShell, useMantineTheme } from '@mantine/core';
 import Test from './pages/Test';
 import Dashboard from './pages/Dashboard';
 import Header from './components/Header';
 
 function App() {
+  const theme = useMantineTheme();
+
   return (
     <Router>
-      <div className="w-screen h-screen flex flex-col bg-background text-textPrimary">
-        <Header />
-        <div className="flex grow h-full w-full">
-          <main className="grow w-full h-full p-4">
-            <Routes>
-              <Route path="/" element={<Dashboard />} />
-              <Route path="/test" element={<Test />} />
-            </Routes>
-          </main>
-        </div>
-      </div>
+      <AppShell
+        header={{ height: 60 }}
+        padding="md"
+        styles={{
+          main: {
+            background: theme.white,
+            color: theme.colors.gray[9]
+          }
+        }}
+      >
+        <AppShell.Header>
+          <Header />
+        </AppShell.Header>
+        <AppShell.Main>
+          <Routes>
+            <Route path="/" element={<Dashboard />} />
+            <Route path="/test" element={<Test />} />
+          </Routes>
+        </AppShell.Main>
+      </AppShell>
     </Router>
   );
 }

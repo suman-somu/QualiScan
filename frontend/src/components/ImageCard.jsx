@@ -11,6 +11,7 @@ const ImageCard = ({ example, onClick }) => {
       <Card
         shadow="sm"
         padding="sm"
+        withBorder
         className="cursor-pointer hover:shadow-md transition-shadow"
         onClick={onClick}
       >

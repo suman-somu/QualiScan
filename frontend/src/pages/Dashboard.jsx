@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { Accordion, Box, Group, ScrollArea, Text, Pagination, Badge } from '@mantine/core';
+import { Accordion, Box, Group, ScrollArea, Text, Pagination, Badge, Container, Flex, Paper, Textarea } from '@mantine/core';
 import axios from 'axios';
 
 const Dashboard = () => {
@@ -27,35 +27,57 @@ const Dashboard = () => {
     setSearchParams({ page: newPage });
   };
 
-  const items = (data || []).map((order) => (
+  const items = data?.map((order) => (
     <Accordion.Item key={order._id || order.order_id} value={order._id || order.order_id}>
       <Accordion.Control>
-        <div className='flex px-5'>
+        <Flex px="sm">
           <Text className="truncate"> Order: {order.order_id || 'N/A'}</Text>
           <Badge color={order.matched ? 'green' : 'red'} style={{ marginLeft: 'auto' }}>
             {order.matched ? 'Matched' : 'Unmatched'}
           </Badge>
-        </div>
+        </Flex>
       </Accordion.Control>
       <Accordion.Panel>
         <Group grow>
           <Box className="w-full h-80 overflow-auto">
-            <Text c="primary" weight={500}>
-              Expected Products:
-            </Text>
-            <ScrollArea style={{ width: '100%', height: 200 }}>
+            <ScrollArea>
               {(order.expected_values || []).map((product, index) => (
-                <pre key={`expected-${index}`} className="whitespace-pre-wrap break-words">{JSON.stringify(product, (key, value) => value, 2)}</pre>
+                <Textarea
+                  key={`expected-${index}`}
+                  value={JSON.stringify(product, (key, value) => value, 2)}
+                  autosize
+                  minRows={1}
+                  maxRows={10}
+                  readOnly
+                  className="whitespace-pre-wrap break-words font-mono"
+                  variant="filled"
+                  size="sm"
+                  label="Expected Products"
+                  description="JSON representation of the product"
+                  resize="vertical"
+                  radius="md"
+                />
               ))}
             </ScrollArea>
           </Box>
           <Box className="w-full h-80 overflow-auto">
-            <Text c="primary" weight={500}>
-              Actual Products:
-            </Text>
-            <ScrollArea style={{ width: '100%', height: 200 }}>
+            <ScrollArea>
               {(order.actual_values || []).map((product, index) => (
-                <pre key={`actual-${index}`} className="whitespace-pre-wrap break-words">{JSON.stringify(product, (key, value) => value, 2)}</pre>
+                <Textarea
+                  key={`actual-${index}`}
+                  value={JSON.stringify(product, (key, value) => value, 2)}
+                  autosize
+                  minRows={2}
+                  maxRows={10}
+                  readOnly
+                  className="whitespace-pre-wrap break-words"
+                  variant="filled"
+                  size="sm"
+                  label="Actual Products"
+                  description="JSON representation of the product"
+                  resize="vertical"
+                  radius="md"
+                />
               ))}
             </ScrollArea>
           </Box>
@@ -65,12 +87,16 @@ const Dashboard = () => {
   ));
 
   return (
-    <div className="w-full min-h-full h-fit border border-border bg-surface rounded-lg p-2 overflow-auto flex flex-col gap-4 items-center justify-between overflow-y-hidden">
-      <Accordion defaultValue="O001" className="w-full grow">
-        {items}
-      </Accordion>
-      <Pagination total={totalPages} value={page} onChange={handlePageChange} size="lg" />
-    </div>
+    <Container fluid p="sm">
+      <Flex direction="column" gap="md" align="center" p="sm">
+        <Paper withBorder p="sm" className="w-full">
+          <Accordion defaultValue="O001" className="w-full">
+            {items}
+          </Accordion>
+        </Paper>
+        <Pagination total={totalPages} value={page} onChange={handlePageChange} size="md" />
+      </Flex>
+    </Container>
   );
 };
 

@@ -10,7 +10,7 @@ export default {
         accent: '#FAFAFA',
         highlight: '#F0F0F0',
         background: '#FFFFFF',
-        surface: '#EDEDED',
+        surface: '#F7F7F7',
         textPrimary: '#0A0A0A',
         textSecondary: '#4B4B4B',
         border: '#D4D4D4',
