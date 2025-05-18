@@ -48,3 +48,6 @@ dist-ssr/
 
 # Ignore pnpm lock file
 pnpm-lock.yaml
+
+# ignore the temp folder
+vision/temp
